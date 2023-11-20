@@ -21,7 +21,7 @@ export default function Footer() {
         justify="center"
         align="center"
       >
-        <Image height={16} width={206} src={logo}/>
+        <Image height={16} width={206} src={logo} alt="Logo" />
         <Stack
           direction="row"
           spacing={6}
@@ -37,9 +37,6 @@ export default function Footer() {
           </Link>
           <Link href="/privacy" passHref>
             <ChakraLink>Privacy Policy</ChakraLink>
-          </Link>
-          <Link href="/status" passHref>
-            <ChakraLink>Status</ChakraLink>
           </Link>
         </Stack>
       </Container>
@@ -66,8 +63,8 @@ export default function Footer() {
         justify="center"
         align="center"
       >
-        <ChakraLink href="https://www.liftedinit.org/hosting" isExternal>
-          <Image height={59} width={200} src={manifest}/>
+        <ChakraLink href="https://www.liftedinit.org/#/hosting" isExternal>
+          <Image height={59} width={200} src={manifest} alt="Powered by Manifest Logo"/>
         </ChakraLink>
       </Container>
     </Box>

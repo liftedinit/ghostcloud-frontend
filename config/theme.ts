@@ -42,10 +42,6 @@ export const defaultThemeObject = {
   shadows: {
     largeSoft: 'rgba(60, 64, 67, 0.15) 0px 2px 10px 6px;'
   },
-  config: {
-    initialColorMode: 'light', // Set default color mode to light
-    useSystemColorMode: false, // Disable automatic color mode based on system preference. TODO: Remove this
-  },
 };
 
 export const defaultTheme = extendTheme(defaultThemeObject);

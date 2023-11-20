@@ -43,7 +43,7 @@ export default function Home() {
               <Text maxW="3xl">
                 Discover the seamless convergence of simplicity and Web3’s
                 robust decentralization with GhostCloud. This platform is a
-                gateway for &ldquo;2.0&rdquo; hosting entities to offer the groundbreaking
+                gateway for "2.0" hosting entities to offer the groundbreaking
                 benefits of decentralized hosting without the complexities of
                 tokens or wallets. With GhostCloud, experience innovation and
                 user-friendly accessibility, embracing the next era of web
