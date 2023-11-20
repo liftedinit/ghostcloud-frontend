@@ -1,0 +1,75 @@
+import React from 'react';
+import Image from 'next/image';
+import {Box, Container, Link as ChakraLink, Stack, Text, useColorModeValue} from "@chakra-ui/react";
+import Link from 'next/link';
+import logoDark from '../public/logo-white.png'
+import logoLight from '../public/logo-black.png'
+import manifest from '../public/manifest-powered.webp'
+
+export default function Footer() {
+  const bgColor = useColorModeValue('modes.dark.background', 'modes.light.background')
+  const textColor = useColorModeValue('modes.dark.text', 'modes.light.text')
+  const logo = useColorModeValue(logoDark, logoLight)
+
+  return (
+    <Box bg={bgColor} color={textColor}>
+      <Container
+        as={Stack}
+        maxW="4xl"
+        pt={20}
+        spacing={4}
+        justify="center"
+        align="center"
+      >
+        <Image height={16} width={206} src={logo}/>
+        <Stack
+          direction="row"
+          spacing={6}
+          wrap="wrap"
+          justify="center"
+          lineHeight={2.5}
+        >
+          <Link href="/" passHref>
+            <ChakraLink>Home</ChakraLink>
+          </Link>
+          <Link href="/terms" passHref>
+            <ChakraLink>Terms Of Service</ChakraLink>
+          </Link>
+          <Link href="/privacy" passHref>
+            <ChakraLink>Privacy Policy</ChakraLink>
+          </Link>
+          <Link href="/status" passHref>
+            <ChakraLink>Status</ChakraLink>
+          </Link>
+        </Stack>
+      </Container>
+
+      <Container
+        as={Stack}
+        maxW="4xl"
+        pt={10}
+        pb={10}
+        spacing={4}
+        justify="center"
+        align="center"
+      >
+        <Text>
+          &copy; {new Date().getUTCFullYear()} GhostCloud. All rights reserved
+        </Text>
+      </Container>
+
+      <Container
+        as={Stack}
+        maxW="4xl"
+        pb={20}
+        spacing={4}
+        justify="center"
+        align="center"
+      >
+        <ChakraLink href="https://www.liftedinit.org/hosting" isExternal>
+          <Image height={59} width={200} src={manifest}/>
+        </ChakraLink>
+      </Container>
+    </Box>
+  )
+}
