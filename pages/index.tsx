@@ -1,5 +1,5 @@
 import {
-  Box,
+  Box, Button,
   Container,
   Flex,
   Heading,
@@ -10,16 +10,19 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import Image from 'next/image';
-import {GoLock, GoShield, GoSmiley} from 'react-icons/go'
+import {GoLock, GoShieldCheck, GoSmiley} from 'react-icons/go'
 import logoDark from "../public/logo192-white.png";
 import logoLight from "../public/logo192-black.png";
 import React from "react";
 import {Feature} from "../components";
+import useWeb3AuthStore from "../store/web3-auth";
+import useAuthHandlers from "../hooks/useAuthHandlers";
 
 export default function Home() {
   const bgColor = useColorModeValue('modes.light.background', 'modes.dark.background');
   const altBgColor = useColorModeValue('modes.light.altBackground', 'modes.dark.altBackground');
   const logo = useColorModeValue(logoLight, logoDark);
+  const { handleLogin  } = useAuthHandlers()
 
   return (
     <>
@@ -49,6 +52,11 @@ export default function Home() {
                 user-friendly accessibility, embracing the next era of web
                 technology effortlessly.
               </Text>
+              <Stack spacing={6} direction="row">
+                <Button onClick={handleLogin}>
+                  Get started
+                </Button>
+              </Stack>
             </Stack>
           </Box>
         </Container>
@@ -83,7 +91,7 @@ export default function Home() {
                 }
               />
               <Feature
-                icon={<Icon as={GoShield} w={10} h={10}/>}
+                icon={<Icon as={GoShieldCheck} w={10} h={10}/>}
                 title="Uncompromising"
                 text={
                   "GhostCloud stands resistant to censorship, ensuring your customers' data remains secure and unaltered."
