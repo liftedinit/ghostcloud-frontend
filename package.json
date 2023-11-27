@@ -21,7 +21,7 @@
     "@cosmos-kit/react": "^2.8.4",
     "@emotion/react": "11.10.6",
     "@emotion/styled": "11.10.6",
-    "@liftedinit/gcjs": "file:../gcjs",
+    "@liftedinit/gcjs": "^0.0.1",
     "@web3auth/base": "^7.1.0",
     "@web3auth/modal": "^7.1.2",
     "@web3auth/no-modal": "^7.1.2",

@@ -2024,8 +2024,10 @@
     bignumber.js "^9.1.2"
     long "^5.2.3"
 
-"@liftedinit/gcjs@file:../gcjs":
+"@liftedinit/gcjs@^0.0.1":
   version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@liftedinit/gcjs/-/gcjs-0.0.1.tgz#a5acf79aeccc2f5293c52d6f9b7991bc6a3fc8e2"
+  integrity sha512-FEM/55a/8mBj+7tqBpRR8AZ/O0e+kdqkatqX5WfHpyBbimDncnjVmkBnJq06YA+8Q8F4VepgxjelER3sKWxccw==
   dependencies:
     "@cosmjs/amino" "0.29.4"
     "@cosmjs/proto-signing" "0.29.4"
