@@ -1,7 +1,10 @@
-import {OPENLOGIN_NETWORK_TYPE, WALLET_ADAPTERS} from "@web3auth/base";
+import { OPENLOGIN_NETWORK_TYPE, WALLET_ADAPTERS } from "@web3auth/base"
 
-export const WEB3AUTH_CLIENT_ID = process.env['NEXT_PUBLIC_WEB3AUTH_CLIENT_ID'] ?? "invalid"
-export const WEB3AUTH_NETWORK = process.env['NEXT_PUBLIC_WEB3AUTH_NETWORK'] as OPENLOGIN_NETWORK_TYPE
+export const WEB3AUTH_CLIENT_ID =
+  process.env["NEXT_PUBLIC_WEB3AUTH_CLIENT_ID"] ?? "invalid"
+export const WEB3AUTH_NETWORK = process.env[
+  "NEXT_PUBLIC_WEB3AUTH_NETWORK"
+] as OPENLOGIN_NETWORK_TYPE
 
 export const WEB3AUTH_MODAL_CONFIG = {
   [WALLET_ADAPTERS.OPENLOGIN]: {

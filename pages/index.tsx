@@ -1,5 +1,6 @@
 import {
-  Box, Button,
+  Box,
+  Button,
   Container,
   Flex,
   Heading,
@@ -8,21 +9,26 @@ import {
   Stack,
   Text,
   useColorModeValue,
-} from '@chakra-ui/react';
-import Image from 'next/image';
-import {GoLock, GoShieldCheck, GoSmiley} from 'react-icons/go'
-import logoDark from "../public/logo192-white.png";
-import logoLight from "../public/logo192-black.png";
-import React from "react";
-import {Feature} from "../components";
-import useWeb3AuthStore from "../store/web3-auth";
-import useAuthHandlers from "../hooks/useAuthHandlers";
+} from "@chakra-ui/react"
+import Image from "next/image"
+import { GoLock, GoShieldCheck, GoSmiley } from "react-icons/go"
+import logoDark from "../public/logo192-white.png"
+import logoLight from "../public/logo192-black.png"
+import React from "react"
+import { Feature } from "../components"
+import useAuthHandlers from "../hooks/useAuthHandlers"
 
 export default function Home() {
-  const bgColor = useColorModeValue('modes.light.background', 'modes.dark.background');
-  const altBgColor = useColorModeValue('modes.light.altBackground', 'modes.dark.altBackground');
-  const logo = useColorModeValue(logoLight, logoDark);
-  const { handleLogin  } = useAuthHandlers()
+  const bgColor = useColorModeValue(
+    "modes.light.background",
+    "modes.dark.background",
+  )
+  const altBgColor = useColorModeValue(
+    "modes.light.altBackground",
+    "modes.dark.altBackground",
+  )
+  const logo = useColorModeValue(logoLight, logoDark)
+  const { handleLogin } = useAuthHandlers()
 
   return (
     <>
@@ -32,13 +38,13 @@ export default function Home() {
             <Stack
               textAlign="center"
               align="center"
-              spacing={{base: 8, md: 10}}
+              spacing={{ base: 8, md: 10 }}
               py={10}
             >
-              <Image height={50} width={50} src={logo} alt="Logo"/>
+              <Image height={50} width={50} src={logo} alt="Logo" />
               <Heading
                 fontWeight={600}
-                fontSize={{base: '2xl', sm: '3xl', md: '5xl'}}
+                fontSize={{ base: "2xl", sm: "3xl", md: "5xl" }}
                 lineHeight="110%"
               >
                 Decentralized Web Hosting for Humans
@@ -53,9 +59,7 @@ export default function Home() {
                 technology effortlessly.
               </Text>
               <Stack spacing={6} direction="row">
-                <Button onClick={handleLogin}>
-                  Get started
-                </Button>
+                <Button onClick={handleLogin}>Get started</Button>
               </Stack>
             </Stack>
           </Box>
@@ -65,33 +69,33 @@ export default function Home() {
       <Container maxW="100%" bg={altBgColor}>
         <Container maxW="4xl">
           <Box py="80px" px={4}>
-            <Flex align="center" justify="center" sx={{mb: 12}}>
+            <Flex align="center" justify="center" sx={{ mb: 12 }}>
               <Heading
                 fontWeight={600}
-                fontSize={{base: '1xl', sm: '2xl', md: '3xl'}}
+                fontSize={{ base: "1xl", sm: "2xl", md: "3xl" }}
                 lineHeight="110%"
                 textAlign="center"
               >
                 Simplicity Meets Decentralization
               </Heading>
             </Flex>
-            <SimpleGrid columns={{base: 1, md: 3}} spacing={10}>
+            <SimpleGrid columns={{ base: 1, md: 3 }} spacing={10}>
               <Feature
-                icon={<Icon as={GoSmiley} w={10} h={10}/>}
+                icon={<Icon as={GoSmiley} w={10} h={10} />}
                 title="Easy to use"
                 text={
-                  'GhostCloud provides a user-friendly interface, making Web3 accessible to everyone, regardless of their experience.'
+                  "GhostCloud provides a user-friendly interface, making Web3 accessible to everyone, regardless of their experience."
                 }
               />
               <Feature
-                icon={<Icon as={GoLock} w={10} h={10}/>}
+                icon={<Icon as={GoLock} w={10} h={10} />}
                 title="Secure"
                 text={
-                  'GhostCloud leverages a decentralized server network, offering enhanced security compared to conventional hosting solutions.'
+                  "GhostCloud leverages a decentralized server network, offering enhanced security compared to conventional hosting solutions."
                 }
               />
               <Feature
-                icon={<Icon as={GoShieldCheck} w={10} h={10}/>}
+                icon={<Icon as={GoShieldCheck} w={10} h={10} />}
                 title="Uncompromising"
                 text={
                   "GhostCloud stands resistant to censorship, ensuring your customers' data remains secure and unaltered."
@@ -108,7 +112,7 @@ export default function Home() {
             <Flex align="center" justify="center">
               <Heading
                 fontWeight={600}
-                fontSize={{base: '1xl', sm: '2xl', md: '3xl'}}
+                fontSize={{ base: "1xl", sm: "2xl", md: "3xl" }}
                 lineHeight="110%"
               >
                 Why GhostCloud?
@@ -121,11 +125,11 @@ export default function Home() {
                 hosting with the boundless potential of Web3 through GhostCloud.
                 As the horizons of Web3 broaden, the quest for streamlined,
                 efficient content delivery solutions is intensifying. GhostCloud
-                distinguishes itself in this competitive landscape by specializing
-                in seamless integrations with established hosting providers,
-                transcending the confines of the nascent Web3 market. Opt for
-                GhostCloud and be where innovation meets established market
-                stability!
+                distinguishes itself in this competitive landscape by
+                specializing in seamless integrations with established hosting
+                providers, transcending the confines of the nascent Web3 market.
+                Opt for GhostCloud and be where innovation meets established
+                market stability!
               </Text>
             </Flex>
           </Box>

@@ -6,23 +6,23 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
-} from "@chakra-ui/react";
-import useWeb3AuthStore from "../store/web3-auth";
-import {TfiMenu} from "react-icons/tfi";
-import Link from "next/link";
-import useAuthHandlers from "../hooks/useAuthHandlers";
-import React from "react";
+} from "@chakra-ui/react"
+import useWeb3AuthStore from "../store/web3-auth"
+import { TfiMenu } from "react-icons/tfi"
+import Link from "next/link"
+import useAuthHandlers from "../hooks/useAuthHandlers"
+import React from "react"
 
 type LoginProps = {}
 
 const Menu: React.FC<LoginProps> = () => {
   const store = useWeb3AuthStore() // To access the provider
-  const { handleLogin, handleLogout } = useAuthHandlers();
+  const { handleLogin, handleLogout } = useAuthHandlers()
 
   return (
     <ChakraMenu>
       <MenuButton as={Button} px={0} variant="outline" justifySelf="end">
-        <Icon as={TfiMenu}/>
+        <Icon as={TfiMenu} />
       </MenuButton>
       <MenuList>
         {store.provider ? (

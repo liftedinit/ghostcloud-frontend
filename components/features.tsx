@@ -1,16 +1,13 @@
-import {
-  Flex,
-  Heading,
-  Stack,
-  Text,
-  useColorModeValue
-} from '@chakra-ui/react';
-import { FeatureProps } from './types';
-import React from "react";
+import { Flex, Heading, Stack, Text, useColorModeValue } from "@chakra-ui/react"
+import { FeatureProps } from "./types"
+import React from "react"
 
-export const Feature = ({title, text, icon}: FeatureProps) => {
-  const bgColor = useColorModeValue('modes.light.background', 'modes.dark.background');
-  const textColor = useColorModeValue('modes.light.text', 'modes.dark.text');
+export const Feature = ({ title, text, icon }: FeatureProps) => {
+  const bgColor = useColorModeValue(
+    "modes.light.background",
+    "modes.dark.background",
+  )
+  const textColor = useColorModeValue("modes.light.text", "modes.dark.text")
 
   return (
     <Stack>
@@ -31,8 +28,8 @@ export const Feature = ({title, text, icon}: FeatureProps) => {
 
       <Flex align="center" justify="center">
         <Heading
-          fontSize={{base: '1xl', sm: '1xl', md: '2xl'}}
-          sx={{textAlign: 'center'}}
+          fontSize={{ base: "1xl", sm: "1xl", md: "2xl" }}
+          sx={{ textAlign: "center" }}
         >
           {title}
         </Heading>
