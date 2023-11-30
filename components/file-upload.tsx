@@ -5,6 +5,7 @@ const FileUpload = ({ field }: { field: FieldProps }) => {
   const { setFieldValue } = useFormikContext()
   const onDrop = (acceptedFiles: File[]) => {
     setFieldValue(field.name, acceptedFiles[0]).catch((err: any) =>
+      // TODO: Handle error
       console.log(err),
     )
   }

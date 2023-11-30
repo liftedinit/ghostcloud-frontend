@@ -12,13 +12,11 @@ import { DeploymentData } from "../components/create-deployment"
 import { fileToArrayBuffer } from "../helpers/files"
 import {
   useMutation,
-  UseMutationResult,
   useQuery,
   useQueryClient,
   UseQueryResult,
 } from "react-query"
 import { QueryMetasResponse } from "@liftedinit/gcjs/dist/codegen/ghostcloud/ghostcloud/query"
-import { DeliverTxResponse } from "@cosmjs/stargate"
 import { useDisplayError } from "../helpers/errors"
 
 // Create a client for sending transactions to Ghostcloud RPC endpoint
@@ -64,20 +62,16 @@ async function createDeploymentMsg(data: DeploymentData, creator: string) {
 export const useCreateDeployment = () => {
   const store = useWeb3AuthStore()
   const queryClient = useQueryClient()
-  const displayError = useDisplayError()
   const create = async (data: DeploymentData | null) => {
-    console.log("Calling create deployment")
     if (!data) {
       throw new Error("Deployment data is empty.")
     }
 
-    console.log("Data is okay")
     const creator = await store.getAddress()
     if (!creator) {
       throw new Error("Creator address is empty.")
     }
 
-    console.log("Creator is okay")
     const client = await createGhostcloudRpcClient(
       Buffer.from(await store.getPrivateKey(), "hex"),
     )
@@ -107,8 +101,74 @@ export const useCreateDeployment = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: "metas" })
     },
-    onError: error => {
-      displayError("Deployment creation failed", error as Error)
+  })
+}
+
+async function updateDeploymentMsg(data: DeploymentData, creator: string) {
+  let payload
+  if (data.file) {
+    const buffer = await fileToArrayBuffer(data.file)
+    payload = ghostcloud.ghostcloud.Payload.fromPartial({
+      archive: ghostcloud.ghostcloud.Archive.fromPartial({
+        type: ghostcloud.ghostcloud.ArchiveType.Zip,
+        content: buffer,
+      }),
+    })
+  }
+
+  const { updateDeployment } = ghostcloud.ghostcloud.MessageComposer.withTypeUrl
+  return updateDeployment({
+    meta: {
+      creator,
+      name: data.name,
+      description: data.description,
+      domain: data.domain,
+    },
+    payload,
+  })
+}
+
+export const useUpdateDeployment = () => {
+  const store = useWeb3AuthStore()
+  const queryClient = useQueryClient()
+  const update = async (data: DeploymentData | null) => {
+    if (!data) {
+      throw new Error("Deployment data is empty.")
+    }
+
+    const creator = await store.getAddress()
+    if (!creator) {
+      throw new Error("Creator address is empty.")
+    }
+
+    const client = await createGhostcloudRpcClient(
+      Buffer.from(await store.getPrivateKey(), "hex"),
+    )
+    const msg = await updateDeploymentMsg(data, creator)
+    // TODO: Fix fees
+    const response = await client.signAndBroadcast(
+      creator,
+      [msg],
+      {
+        amount: [{ denom: "token", amount: "1" }],
+        gas: "100000000",
+      },
+      data.memo,
+    )
+
+    if (response.code) {
+      throw new Error(
+        `Deployment update failed with error code: ${response.code}. Raw log: ${response.rawLog}`,
+      )
+    }
+
+    return response
+  }
+
+  return useMutation({
+    mutationFn: update,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: "metas" })
     },
   })
 }

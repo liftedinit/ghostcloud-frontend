@@ -15,16 +15,25 @@ import { DeleteIcon, EditIcon } from "@chakra-ui/icons"
 import { useFetchMetas } from "../lib/ghostcloud"
 import { useState } from "react"
 import CreateDeploymentModal from "./create-deployment"
+import UpdateDeploymentModal from "./update-deployment"
 
 const Dashboard = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
+  const [selectedDeploymentName, setSelectedDeploymentName] =
+    useState<string>("")
+  const [selectedDeploymentDescription, setSelectedDeploymentDescription] =
+    useState<string>("")
+  const [selectedDeploymentDomain, setSelectedDeploymentDomain] =
+    useState<string>("")
   const { data: metas, isLoading: isMetaLoading } = useFetchMetas()
 
-  const handleUpdate = (name: string) => {
-    // Logic for Update
-    console.log("Update", name)
+  const handleUpdate = (name: string, description: string, domain: string) => {
+    setSelectedDeploymentName(name)
+    setSelectedDeploymentDescription(description)
+    setSelectedDeploymentDomain(domain)
+    setIsUpdateModalOpen(true)
   }
-
   const handleRemove = (name: string) => {
     // Logic for Remove
     console.log("Remove", name)
@@ -35,12 +44,23 @@ const Dashboard = () => {
       {isMetaLoading ? <Spinner /> : null}
       {metas ? (
         <>
-          <Button onClick={() => setIsModalOpen(true)} float="right" mb={2}>
+          <Button
+            onClick={() => setIsCreateModalOpen(true)}
+            float="right"
+            mb={2}
+          >
             Create Deployment
           </Button>
           <CreateDeploymentModal
-            isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
+            isOpen={isCreateModalOpen}
+            onClose={() => setIsCreateModalOpen(false)}
+          />
+          <UpdateDeploymentModal
+            isOpen={isUpdateModalOpen}
+            onClose={() => setIsUpdateModalOpen(false)}
+            deploymentName={selectedDeploymentName}
+            deploymentDescription={selectedDeploymentDescription}
+            deploymentDomain={selectedDeploymentDomain}
           />
           <Table variant="simple">
             <Thead>
@@ -62,7 +82,9 @@ const Dashboard = () => {
                   <Td>TODO URL</Td>
                   <Td>
                     <IconButton
-                      onClick={() => handleUpdate(meta.name)}
+                      onClick={() =>
+                        handleUpdate(meta.name, meta.description, meta.domain)
+                      }
                       aria-label="Update"
                       icon={<EditIcon />}
                       size="sm"

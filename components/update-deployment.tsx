@@ -15,7 +15,7 @@ import {
   Text,
   Textarea,
 } from "@chakra-ui/react"
-import { useCreateDeployment } from "../lib/ghostcloud"
+import { useUpdateDeployment } from "../lib/ghostcloud"
 import FileUpload from "./file-upload"
 import { useDisplayError } from "../helpers/errors"
 
@@ -27,14 +27,20 @@ export interface DeploymentData {
   file: File | null
 }
 
-const CreateDeploymentModal = ({
+const UpdateDeploymentModal = ({
   isOpen,
   onClose,
+  deploymentName,
+  deploymentDescription,
+  deploymentDomain,
 }: {
   isOpen: boolean
   onClose: () => void
+  deploymentName: string
+  deploymentDescription: string
+  deploymentDomain: string
 }) => {
-  const mutation = useCreateDeployment()
+  const mutation = useUpdateDeployment()
   const displayError = useDisplayError()
 
   const handleSubmit = async (
@@ -42,6 +48,7 @@ const CreateDeploymentModal = ({
     actions: FormikHelpers<any>,
   ) => {
     actions.setSubmitting(true)
+
     try {
       await mutation.mutateAsync(values)
       onClose()
@@ -56,13 +63,13 @@ const CreateDeploymentModal = ({
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Create Deployment</ModalHeader>
+        <ModalHeader>Update Deployment</ModalHeader>
         <ModalCloseButton />
         <Formik
           initialValues={{
-            name: Math.random().toString(36).substring(2, 14), // Random 12 character string
-            description: "",
-            domain: "",
+            name: deploymentName,
+            description: deploymentDescription,
+            domain: deploymentDomain,
             memo: "",
             file: null,
           }}
@@ -76,11 +83,11 @@ const CreateDeploymentModal = ({
             domain: Yup.string().max(253, "Must be 253 characters or less"),
             memo: Yup.string().max(500, "Must be 500 characters or less"),
             file: Yup.mixed()
-              .required("File is required")
+              .nullable()
               .test(
                 "fileSize",
                 "File is too large",
-                value => value && (value as File).size <= 5242880,
+                value => value === null || (value as File).size <= 5242880,
               ),
           })}
           onSubmit={handleSubmit}
@@ -94,7 +101,7 @@ const CreateDeploymentModal = ({
                   <ErrorMessage name="name" component={Text} />
                 </FormControl>
 
-                <FormControl mt={4}>
+                <FormControl isRequired mt={4}>
                   <FormLabel>Description</FormLabel>
                   <Field as={Textarea} name="description" type="textarea" />
                   <ErrorMessage name="description" component={Text} />
@@ -112,7 +119,7 @@ const CreateDeploymentModal = ({
                   <ErrorMessage name="memo" component={Text} />
                 </FormControl>
 
-                <FormControl isRequired mt={4}>
+                <FormControl mt={4}>
                   <FormLabel>File (Max 5MB)</FormLabel>
                   <Field name="file" component={FileUpload} />
                   <ErrorMessage name="file" component={Text} />
@@ -141,4 +148,4 @@ const CreateDeploymentModal = ({
   )
 }
 
-export default CreateDeploymentModal
+export default UpdateDeploymentModal
