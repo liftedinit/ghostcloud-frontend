@@ -24,11 +24,13 @@ export const defaultThemeObject = {
         background: primaryColors["50"],
         altBackground: primaryColors["200"],
         text: primaryColors["900"],
+        altText: primaryColors["500"],
       },
       dark: {
         background: primaryColors["900"],
         altBackground: primaryColors["700"],
         text: primaryColors["50"],
+        altText: primaryColors["500"],
       },
     },
   },

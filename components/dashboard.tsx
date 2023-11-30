@@ -16,10 +16,12 @@ import { useFetchMetas } from "../lib/ghostcloud"
 import { useState } from "react"
 import CreateDeploymentModal from "./create-deployment"
 import UpdateDeploymentModal from "./update-deployment"
+import RemoveDeploymentModal from "./remove-deployment"
 
 const Dashboard = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
+  const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false)
   const [selectedDeploymentName, setSelectedDeploymentName] =
     useState<string>("")
   const [selectedDeploymentDescription, setSelectedDeploymentDescription] =
@@ -35,8 +37,8 @@ const Dashboard = () => {
     setIsUpdateModalOpen(true)
   }
   const handleRemove = (name: string) => {
-    // Logic for Remove
-    console.log("Remove", name)
+    setSelectedDeploymentName(name)
+    setIsRemoveModalOpen(true)
   }
 
   return (
@@ -61,6 +63,11 @@ const Dashboard = () => {
             deploymentName={selectedDeploymentName}
             deploymentDescription={selectedDeploymentDescription}
             deploymentDomain={selectedDeploymentDomain}
+          />
+          <RemoveDeploymentModal
+            isOpen={isRemoveModalOpen}
+            onClose={() => setIsRemoveModalOpen(false)}
+            deploymentName={selectedDeploymentName}
           />
           <Table variant="simple">
             <Thead>

@@ -173,6 +173,51 @@ export const useUpdateDeployment = () => {
   })
 }
 
+async function removeDeploymentMsg(name: string, creator: string) {
+  const { removeDeployment } = ghostcloud.ghostcloud.MessageComposer.withTypeUrl
+  return removeDeployment({
+    creator,
+    name: name,
+  })
+}
+
+export const useRemoveDeployment = () => {
+  const store = useWeb3AuthStore()
+  const queryClient = useQueryClient()
+  const remove = async (name: string) => {
+    const creator = await store.getAddress()
+    if (!creator) {
+      throw new Error("Creator address is empty.")
+    }
+
+    const client = await createGhostcloudRpcClient(
+      Buffer.from(await store.getPrivateKey(), "hex"),
+    )
+    const msg = await removeDeploymentMsg(name, creator)
+
+    // TODO: Fix fees
+    const response = await client.signAndBroadcast(creator, [msg], {
+      amount: [{ denom: "token", amount: "1" }],
+      gas: "100000000",
+    })
+
+    if (response.code) {
+      throw new Error(
+        `Deployment update failed with error code: ${response.code}. Raw log: ${response.rawLog}`,
+      )
+    }
+
+    return response
+  }
+
+  return useMutation({
+    mutationFn: remove,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: "metas" })
+    },
+  })
+}
+
 // Query the Ghostcloud RPC endpoint for deployments created by the current user
 export const useFetchMetas = (): UseQueryResult<QueryMetasResponse, Error> => {
   const store = useWeb3AuthStore()
