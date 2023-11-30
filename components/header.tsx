@@ -1,10 +1,9 @@
-import React from 'react';
 import Image from 'next/image';
 import {
   Button,
   Container,
   Grid,
-  GridItem,
+  GridItem, HStack,
   Icon,
   Link as ChakraLink,
   useColorMode,
@@ -14,11 +13,25 @@ import Link from 'next/link';
 import logoLight from '../public/logo-black.png';
 import logoDark from '../public/logo-white.png';
 import {BsFillMoonStarsFill, BsFillSunFill} from "react-icons/bs";
+import Menu from './menu';
+import AddressDisplay from "./address-display";
+import {useEffect, useState} from "react";
+import useWeb3AuthStore from "../store/web3-auth";
 
 function Header() {
   const {colorMode, toggleColorMode} = useColorMode()
   const bgColor = useColorModeValue('modes.light.background', 'modes.dark.background')
   const logo = useColorModeValue(logoLight, logoDark);
+  const store = useWeb3AuthStore();
+  const [address, setAddress] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchAddress = async () => {
+      const address = await store.getAddress();
+      setAddress(address);
+    }
+    fetchAddress();
+  }, [store]);
 
   return (
     <header>
@@ -37,6 +50,7 @@ function Header() {
               justifyContent={'flex-start'}
               py={2}
             >
+              {address ? (<AddressDisplay address={address}/>) : null}
             </GridItem>
             <GridItem
               colSpan={1}
@@ -58,9 +72,12 @@ function Header() {
               justifyContent={'flex-end'}
               py={2}
             >
-              <Button variant="outline" px={0} onClick={toggleColorMode} justifySelf="end">
-                <Icon as={colorMode === 'light' ? BsFillMoonStarsFill : BsFillSunFill}/>
-              </Button>
+              <HStack spacing={4}>
+                <Button variant="outline" px={0} onClick={toggleColorMode} justifySelf="end">
+                  <Icon as={colorMode === 'light' ? BsFillMoonStarsFill : BsFillSunFill}/>
+                </Button>
+                <Menu />
+              </HStack>
             </GridItem>
           </Grid>
         </Container>
