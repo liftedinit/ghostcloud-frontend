@@ -16,6 +16,10 @@ jobs:
     resource_class: large
     steps:
       - checkout
+      - node/install:
+          install-yarn: true
+          yarn-version: 4.0.2
+          node-version: << parameters.node_version >>
       - run:
           command: node -v && yarn -v
       - node/install-packages:
