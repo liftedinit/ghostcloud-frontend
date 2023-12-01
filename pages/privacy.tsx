@@ -1,4 +1,4 @@
-import { Box, Container, Heading, Link, Text } from "@chakra-ui/react"
+import { Box, Container, Heading, Text } from "@chakra-ui/react"
 
 export function PrivacyPolicy() {
   return (
@@ -9,9 +9,10 @@ export function PrivacyPolicy() {
         </Heading>
         <Text>
           This Privacy Policy outlines the procedures and practices of
-          GhostCloud ("we", "us", or "our") regarding the collection, use, and
-          sharing of your information when you interact with our website or
-          application (collectively, the "Service").
+          GhostCloud (&quot;we&quot;, &quot;us&quot;, or &quot;our&quot;)
+          regarding the collection, use, and sharing of your information when
+          you interact with our website or application (collectively, the
+          &quot;Service&quot;).
         </Text>
         <Heading as="h2" size="md" mt={8} mb={2}>
           Information We Collect
@@ -84,11 +85,9 @@ export function PrivacyPolicy() {
         <Text>
           If you have questions, concerns, or suggestions regarding this Privacy
           Policy, we welcome you to contact us at{" "}
-          <Link href="mailto:ghostcloud@liftedinit.org">
+          <a href="mailto:ghostcloud@liftedinit.org">
             ghostcloud@liftedinit.org
-          </Link>
-          . We are committed to addressing your concerns to the best of our
-          ability.
+          </a>
         </Text>
       </Box>
     </Container>

@@ -1,4 +1,4 @@
-import { Box, Container, Heading, Link, Text } from "@chakra-ui/react"
+import { Box, Container, Heading, Text } from "@chakra-ui/react"
 
 export function TermsOfService() {
   return (
@@ -8,10 +8,11 @@ export function TermsOfService() {
           Terms Of Service
         </Heading>
         <Text>
-          Welcome to GhostCloud ("we", "us", or "our"). By accessing or using
-          our website or application (the "Service"), you agree to be bound by
-          these Terms of Service ("Terms"). If you disagree with any part of
-          these Terms, please refrain from using our Service.
+          Welcome to GhostCloud (&quot;we&quot;, &quot;us&quot;, or
+          &quot;our&quot;). By accessing or using our website or application
+          (the &quot;Service&quot;), you agree to be bound by these Terms of
+          Service (&quot;Terms&quot;). If you disagree with any part of these
+          Terms, please refrain from using our Service.
         </Text>
         <Heading as="h2" size="md" mt={8} mb={2}>
           Use of the Service
@@ -39,11 +40,11 @@ export function TermsOfService() {
             While the Service, encompassing text, graphics, images, logos,
             trademarks, and software, remains the property of GhostCloud and its
             licensors, protected by applicable intellectual property laws, any
-            content, data, or intellectual property you provide or create (“User
-            Content”) remains solely yours. You retain all rights and
-            intellectual property interests in your User Content, and GhostCloud
-            claims no ownership, right, title, or interest in any User Content
-            you create, upload, or share on or through the Service.
+            content, data, or intellectual property you provide or create
+            (&quot;User Content&quot;) remains solely yours. You retain all
+            rights and intellectual property interests in your User Content, and
+            GhostCloud claims no ownership, right, title, or interest in any
+            User Content you create, upload, or share on or through the Service.
           </p>
           <p style={{ marginBottom: "20px" }}>
             You grant GhostCloud a limited, non-exclusive, royalty-free license
@@ -61,10 +62,10 @@ export function TermsOfService() {
           Disclaimer of Warranties
         </Heading>
         <Text>
-          The Service is provided "as is" and "as available," devoid of any
-          warranties, express, or implied. We neither assure uninterrupted,
-          error-free, nor secure utilization of the Service. Your access and use
-          of the Service are at your own risk.
+          The Service is provided &quot;as is&quot; and &quot;as
+          available&quot;, devoid of any warranties, express, or implied. We
+          neither assure uninterrupted, error-free, nor secure utilization of
+          the Service. Your access and use of the Service are at your own risk.
         </Text>
         <Heading as="h2" size="md" mt={8} mb={2}>
           Limitation of Liability
@@ -96,9 +97,9 @@ export function TermsOfService() {
         <Text>
           If you have any questions or concerns about these Terms, please
           contact us at{" "}
-          <Link href="mailto:ghostcloud@liftedinit.org">
+          <a href="mailto:ghostcloud@liftedinit.org">
             ghostcloud@liftedinit.org
-          </Link>
+          </a>
         </Text>
       </Box>
     </Container>

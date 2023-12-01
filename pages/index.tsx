@@ -52,11 +52,11 @@ export default function Home() {
               <Text maxW="3xl">
                 Discover the seamless convergence of simplicity and Web3’s
                 robust decentralization with GhostCloud. This platform is a
-                gateway for "2.0" hosting entities to offer the groundbreaking
-                benefits of decentralized hosting without the complexities of
-                tokens or wallets. With GhostCloud, experience innovation and
-                user-friendly accessibility, embracing the next era of web
-                technology effortlessly.
+                gateway for &quot;2.0&quot; hosting entities to offer the
+                groundbreaking benefits of decentralized hosting without the
+                complexities of tokens or wallets. With GhostCloud, experience
+                innovation and user-friendly accessibility, embracing the next
+                era of web technology effortlessly.
               </Text>
               <Stack spacing={6} direction="row">
                 <Button onClick={handleLogin}>Get started</Button>
