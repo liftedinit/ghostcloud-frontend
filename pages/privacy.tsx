@@ -9,9 +9,10 @@ export function PrivacyPolicy() {
         </Heading>
         <Text>
           This Privacy Policy outlines the procedures and practices of
-          GhostCloud ("we", "us", or "our") regarding the collection, use, and
-          sharing of your information when you interact with our website or
-          application (collectively, the "Service").
+          GhostCloud (&quot;we&quot;, &quot;us&quot;, or &quot;our&quot;)
+          regarding the collection, use, and sharing of your information when
+          you interact with our website or application (collectively, the
+          &quot;Service&quot;).
         </Text>
         <Heading as="h2" size="md" mt={8} mb={2}>
           Information We Collect
