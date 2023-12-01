@@ -16,16 +16,15 @@ jobs:
     resource_class: large
     steps:
       - checkout
-      - node/install:
-          install-yarn: true
-          yarn-version: 4.0.2
-          node-version: << parameters.node_version >>
+      - run:
+          name: Yarn Set Version Stable
+          command: |                                                                                                                                                      
+           npm install -g yarn || echo "Yarn may have already been installed."                                                                                            
+           yarn set version stable
       - run:
           command: node -v && yarn -v
       - node/install-packages:
           pkg-manager: yarn
-      - run:
-          command: yarn install
       - run:
           command: yarn build
 
