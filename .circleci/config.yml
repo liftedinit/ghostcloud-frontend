@@ -1,0 +1,32 @@
+# ghostcloud-cosmos CI
+# The Lifted Initiative
+version: 2.1
+
+orbs:
+  node: circleci/node@5.1.0
+
+jobs:
+  build:
+    parameters:
+      node_version:
+        type: string
+    executor:
+      name: node/default
+      tag: << parameters.node_version >>
+    resource_class: large
+    steps:
+      - checkout
+      - run:
+          command: node -v && yarn -v
+      - node/install-packages:
+          pkg-manager: yarn
+      - run:
+          command: yarn install
+      - run:
+          command: yarn build
+
+workflows:
+  ci:
+    jobs:
+      - build:
+          node_version: "20.9.0"
