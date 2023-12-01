@@ -1,7 +1,7 @@
 import { FieldProps, useFormikContext } from "formik"
 import { useDropzone } from "react-dropzone"
 
-const FileUpload = ({ field }: { field: FieldProps }) => {
+const FileUpload = ({ field }: FieldProps) => {
   const { setFieldValue } = useFormikContext()
   const onDrop = (acceptedFiles: File[]) => {
     setFieldValue(field.name, acceptedFiles[0]).catch((err: any) =>
