@@ -1,14 +1,24 @@
-import React from 'react';
-import Image from 'next/image';
-import {Box, Container, Link as ChakraLink, Stack, Text, useColorModeValue} from "@chakra-ui/react";
-import Link from 'next/link';
-import logoDark from '../public/logo-white.png'
-import logoLight from '../public/logo-black.png'
-import manifest from '../public/manifest-powered.webp'
+import React from "react"
+import Image from "next/image"
+import {
+  Box,
+  Container,
+  Link as ChakraLink,
+  Stack,
+  Text,
+  useColorModeValue,
+} from "@chakra-ui/react"
+import Link from "next/link"
+import logoDark from "../public/logo-white.png"
+import logoLight from "../public/logo-black.png"
+import manifest from "../public/manifest-powered.webp"
 
 export default function Footer() {
-  const bgColor = useColorModeValue('modes.dark.background', 'modes.light.background')
-  const textColor = useColorModeValue('modes.dark.text', 'modes.light.text')
+  const bgColor = useColorModeValue(
+    "modes.dark.background",
+    "modes.light.background",
+  )
+  const textColor = useColorModeValue("modes.dark.text", "modes.light.text")
   const logo = useColorModeValue(logoDark, logoLight)
 
   return (
@@ -64,7 +74,12 @@ export default function Footer() {
         align="center"
       >
         <ChakraLink href="https://www.liftedinit.org/#/hosting" isExternal>
-          <Image height={59} width={200} src={manifest} alt="Powered by Manifest Logo"/>
+          <Image
+            height={59}
+            width={200}
+            src={manifest}
+            alt="Powered by Manifest Logo"
+          />
         </ChakraLink>
       </Container>
     </Box>

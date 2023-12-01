@@ -1,13 +1,16 @@
 // Handle the login and logout actions, and fetch the address from the provider
 
-import {useColorMode, useToast} from "@chakra-ui/react";
-import {web3AuthInitProvider} from "../lib/web3-auth";
-import {GHOSTCLOUD_CHAIN_CONFIG, GHOSTCLOUD_UI_CONFIG} from "../config/ghostcloud-chain";
-import useWeb3AuthStore from "../store/web3-auth";
-import {useRouter} from "next/router";
+import { useColorMode, useToast } from "@chakra-ui/react"
+import { web3AuthInitProvider } from "../lib/web3-auth"
+import {
+  GHOSTCLOUD_CHAIN_CONFIG,
+  GHOSTCLOUD_UI_CONFIG,
+} from "../config/ghostcloud-chain"
+import useWeb3AuthStore from "../store/web3-auth"
+import { useRouter } from "next/router"
 
 export default function useAuthHandlers() {
-  const {colorMode} = useColorMode() // To pass the color mode to Web3Auth
+  const { colorMode } = useColorMode() // To pass the color mode to Web3Auth
   const store = useWeb3AuthStore() // To access the provider
   const toast = useToast() // To display errors
   const router = useRouter() // To redirect on logout
@@ -40,8 +43,8 @@ export default function useAuthHandlers() {
   // Redirect to the homepage after logout.
   const handleLogout = async () => {
     store.logout()
-    await router.push('/') // Return to the homepage
+    await router.push("/") // Return to the homepage
   }
 
-  return { handleLogin, handleLogout };
+  return { handleLogin, handleLogout }
 }

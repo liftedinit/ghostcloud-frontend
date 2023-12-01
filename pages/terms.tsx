@@ -1,4 +1,4 @@
-import { Box, Container, Heading, Link, Text } from '@chakra-ui/react'
+import { Box, Container, Heading, Link, Text } from "@chakra-ui/react"
 
 export function TermsOfService() {
   return (
@@ -35,7 +35,7 @@ export function TermsOfService() {
           Intellectual Property
         </Heading>
         <Text>
-          <p style={{ marginBottom: '20px' }}>
+          <p style={{ marginBottom: "20px" }}>
             While the Service, encompassing text, graphics, images, logos,
             trademarks, and software, remains the property of GhostCloud and its
             licensors, protected by applicable intellectual property laws, any
@@ -45,7 +45,7 @@ export function TermsOfService() {
             claims no ownership, right, title, or interest in any User Content
             you create, upload, or share on or through the Service.
           </p>
-          <p style={{ marginBottom: '20px' }}>
+          <p style={{ marginBottom: "20px" }}>
             You grant GhostCloud a limited, non-exclusive, royalty-free license
             to use, host, and display your User Content solely for the purpose
             of providing, improving, and developing the Service, subject to
@@ -95,7 +95,7 @@ export function TermsOfService() {
         </Heading>
         <Text>
           If you have any questions or concerns about these Terms, please
-          contact us at{' '}
+          contact us at{" "}
           <Link href="mailto:ghostcloud@liftedinit.org">
             ghostcloud@liftedinit.org
           </Link>
