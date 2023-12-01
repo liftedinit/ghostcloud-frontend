@@ -1,4 +1,4 @@
-import { Box, Container, Heading, Link, Text } from "@chakra-ui/react"
+import { Box, Container, Heading, Text } from "@chakra-ui/react"
 
 export function TermsOfService() {
   return (
@@ -97,9 +97,9 @@ export function TermsOfService() {
         <Text>
           If you have any questions or concerns about these Terms, please
           contact us at{" "}
-          <Link href="mailto:ghostcloud@liftedinit.org">
+          <a href="mailto:ghostcloud@liftedinit.org">
             ghostcloud@liftedinit.org
-          </Link>
+          </a>
         </Text>
       </Box>
     </Container>

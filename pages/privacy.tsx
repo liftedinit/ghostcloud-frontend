@@ -1,4 +1,4 @@
-import { Box, Container, Heading, Link, Text } from "@chakra-ui/react"
+import { Box, Container, Heading, Text } from "@chakra-ui/react"
 
 export function PrivacyPolicy() {
   return (
@@ -85,11 +85,9 @@ export function PrivacyPolicy() {
         <Text>
           If you have questions, concerns, or suggestions regarding this Privacy
           Policy, we welcome you to contact us at{" "}
-          <Link href="mailto:ghostcloud@liftedinit.org">
+          <a href="mailto:ghostcloud@liftedinit.org">
             ghostcloud@liftedinit.org
-          </Link>
-          . We are committed to addressing your concerns to the best of our
-          ability.
+          </a>
         </Text>
       </Box>
     </Container>
