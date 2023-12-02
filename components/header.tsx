@@ -82,6 +82,7 @@ function Header() {
                   px={0}
                   onClick={toggleColorMode}
                   justifySelf="end"
+                  data-testid="theme-toggle"
                 >
                   <Icon
                     as={
