@@ -10,8 +10,8 @@
     "prettier": "prettier --write ."
   },
   "dependencies": {
-    "@chakra-ui/icons": "2.0.12",
-    "@chakra-ui/react": "2.5.1",
+    "@chakra-ui/icons": "2.1.1",
+    "@chakra-ui/react": "2.8.2",
     "@cosmjs/cosmwasm-stargate": "0.32.0",
     "@cosmjs/proto-signing": "^0.32.0",
     "@cosmjs/stargate": "^0.32.0",
