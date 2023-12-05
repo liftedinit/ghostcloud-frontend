@@ -94,7 +94,7 @@ const CreateDeploymentModal = ({
                   <ErrorMessage name="name" component={Text} />
                 </FormControl>
 
-                <FormControl mt={4}>
+                <FormControl isRequired mt={4}>
                   <FormLabel>Description</FormLabel>
                   <Field as={Textarea} name="description" type="textarea" />
                   <ErrorMessage name="description" component={Text} />
