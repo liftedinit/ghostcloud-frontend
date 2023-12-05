@@ -32,7 +32,7 @@
     "chain-registry": "1.20.0",
     "formik": "^2.4.5",
     "framer-motion": "10.16.14",
-    "next": "12.2.5",
+    "next": "14.0.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-dropzone": "^14.2.3",
@@ -49,6 +49,6 @@
     "eslint": "8.55.0",
     "eslint-config-next": "14.0.3",
     "prettier": "^3.1.0",
-    "typescript": "4.9.3"
+    "typescript": "5.3.2"
   }
 }
