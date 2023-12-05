@@ -64,9 +64,7 @@ function Header() {
               py={2}
             >
               <Link href="/" passHref>
-                <ChakraLink p={2}>
-                  <Image src={logo} alt="Header Logo" height={16} width={206} />
-                </ChakraLink>
+                <Image src={logo} alt="Header Logo" height={16} width={206} />
               </Link>
             </GridItem>
             <GridItem

@@ -1,7 +1,6 @@
 import {
   Button,
   Icon,
-  Link as ChakraLink,
   Menu as ChakraMenu,
   MenuButton,
   MenuItem,
@@ -28,9 +27,7 @@ const Menu: React.FC<LoginProps> = () => {
         {store.provider ? (
           <>
             <Link href="/dashboard" passHref>
-              <ChakraLink>
-                <MenuItem>Dashboard</MenuItem>
-              </ChakraLink>
+              <MenuItem>Dashboard</MenuItem>
             </Link>
             <MenuItem onClick={handleLogout}>Logout</MenuItem>
           </>
