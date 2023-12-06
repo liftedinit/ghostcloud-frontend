@@ -6,15 +6,11 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react"
 import { LuCopy, LuCopyCheck } from "react-icons/lu"
+import { truncateAddress } from "../helpers/address"
 
 export default function AddressDisplay({
   address,
 }: Readonly<{ address: string }>) {
-  const N = 4
-  const start = address.slice(0, N)
-  const end = address.slice(-N)
-  const displayAddress = `${start}...${end}`
-
   const addrBgColor = useColorModeValue(
     "modes.dark.altBackground",
     "modes.light.altBackground",
@@ -37,7 +33,7 @@ export default function AddressDisplay({
         px={1}
         borderRadius="md"
       >
-        {displayAddress}
+        {truncateAddress(address, 4)}
       </Box>
       <Button
         height="100%"
