@@ -17,6 +17,10 @@ export const GHOSTCLOUD_CHAIN_ID =
   process.env["NEXT_PUBLIC_GHOSTCLOUD_CHAIN_ID"] ?? "gc-testnet-1"
 export const GHOSTCLOUD_DENOM =
   process.env["NEXT_PUBLIC_GHOSTCLOUD_DENOM"] ?? "token"
+export const GHOSTCLOUD_URL_DOMAIN =
+  process.env["NEXT_PUBLIC_GHOSTCLOUD_URL_DOMAIN"] ?? "localhost:8880"
+export const GHOSTCLOUD_URL_SCHEME =
+  process.env["NEXT_PUBLIC_GHOSTCLOUD_URL_SCHEME"] ?? "http"
 export const GHOSTCLOUD_LIGHT_LOGO = "/logo192-black.png"
 export const GHOSTCLOUD_DARK_LOGO = "/logo192-white.png"
 export const GHOSTCLOUD_MODAL_PRIMARY_COLOR = "gray"

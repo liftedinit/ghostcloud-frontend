@@ -7,6 +7,7 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react"
 import { LuCopy, LuCopyCheck } from "react-icons/lu"
+import { truncateAddress } from "../helpers/address"
 import { useFetchAddress } from "../lib/ghostcloud"
 
 export default function AddressDisplay() {
@@ -21,13 +22,9 @@ export default function AddressDisplay() {
   )
   const copyFgColor = useColorModeValue("modes.light.text", "modes.dark.text")
   const { data: address, isLoading: isAddressLoading } = useFetchAddress()
+  const displayAddress = truncateAddress(address ?? "", 4)
 
-  const N = 4
-  const start = address?.slice(0, N)
-  const end = address?.slice(-N)
-  const displayAddress = `${start}...${end}`
-
-  const { hasCopied, onCopy } = useClipboard(address ?? "")
+  const { hasCopied, onCopy } = useClipboard(displayAddress)
 
   return (
     <Flex alignItems={"center"}>
