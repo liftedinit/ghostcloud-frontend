@@ -2,15 +2,15 @@ import {
   Box,
   Button,
   Flex,
+  Spinner,
   useClipboard,
   useColorModeValue,
 } from "@chakra-ui/react"
 import { LuCopy, LuCopyCheck } from "react-icons/lu"
 import { truncateAddress } from "../helpers/address"
+import { useFetchAddress } from "../lib/ghostcloud"
 
-export default function AddressDisplay({
-  address,
-}: Readonly<{ address: string }>) {
+export default function AddressDisplay() {
   const addrBgColor = useColorModeValue(
     "modes.dark.altBackground",
     "modes.light.altBackground",
@@ -21,7 +21,10 @@ export default function AddressDisplay({
     "modes.dark.background",
   )
   const copyFgColor = useColorModeValue("modes.light.text", "modes.dark.text")
-  const { hasCopied, onCopy } = useClipboard(address)
+  const { data: address, isLoading: isAddressLoading } = useFetchAddress()
+  const displayAddress = truncateAddress(address ?? "", 4)
+
+  const { hasCopied, onCopy } = useClipboard(displayAddress)
 
   return (
     <Flex alignItems={"center"}>
@@ -33,7 +36,7 @@ export default function AddressDisplay({
         px={1}
         borderRadius="md"
       >
-        {truncateAddress(address, 4)}
+        {isAddressLoading ? <Spinner /> : displayAddress}
       </Box>
       <Button
         height="100%"

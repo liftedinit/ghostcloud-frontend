@@ -9,6 +9,7 @@ import {
   Link as ChakraLink,
   useColorMode,
   useColorModeValue,
+  VStack,
 } from "@chakra-ui/react"
 import Link from "next/link"
 import logoLight from "../public/logo-black.png"
@@ -18,6 +19,7 @@ import Menu from "./menu"
 import AddressDisplay from "./address-display"
 import { useEffect, useState } from "react"
 import useWeb3AuthStore from "../store/web3-auth"
+import BalanceDisplay from "./balance-display"
 
 function Header() {
   const { colorMode, toggleColorMode } = useColorMode()
@@ -27,15 +29,7 @@ function Header() {
   )
   const logo = useColorModeValue(logoLight, logoDark)
   const store = useWeb3AuthStore()
-  const [address, setAddress] = useState<string | null>(null)
-
-  useEffect(() => {
-    const fetchAddress = async () => {
-      const address = await store.getAddress()
-      setAddress(address)
-    }
-    fetchAddress()
-  }, [store])
+  const isConnected = store.isConnected()
 
   return (
     <header>
@@ -54,7 +48,12 @@ function Header() {
               justifyContent={"flex-start"}
               py={2}
             >
-              {address ? <AddressDisplay address={address} /> : null}
+              {isConnected ? (
+                <VStack alignItems={"start"}>
+                  <AddressDisplay />
+                  <BalanceDisplay />
+                </VStack>
+              ) : null}
             </GridItem>
             <GridItem
               colSpan={1}
