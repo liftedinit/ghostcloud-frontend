@@ -5,8 +5,11 @@ import {
 } from "@liftedinit/gcjs"
 import {
   GHOSTCLOUD_ADDRESS_PREFIX,
+  GHOSTCLOUD_CREATE_FEE,
   GHOSTCLOUD_DENOM,
+  GHOSTCLOUD_REMOVE_FEE,
   GHOSTCLOUD_RPC_TARGET,
+  GHOSTCLOUD_UPDATE_FEE,
 } from "../config/ghostcloud-chain"
 import useWeb3AuthStore from "../store/web3-auth"
 import {
@@ -87,7 +90,7 @@ export const useCreateDeployment = () => {
       creator,
       [msg],
       {
-        amount: [{ denom: "token", amount: "1" }],
+        amount: [{ denom: GHOSTCLOUD_DENOM, amount: GHOSTCLOUD_CREATE_FEE }],
         gas: "100000000",
       },
       data.memo,
@@ -157,7 +160,7 @@ export const useUpdateDeployment = () => {
       creator,
       [msg],
       {
-        amount: [{ denom: "token", amount: "1" }],
+        amount: [{ denom: GHOSTCLOUD_DENOM, amount: GHOSTCLOUD_UPDATE_FEE }],
         gas: "100000000",
       },
       data.memo,
@@ -205,7 +208,7 @@ export const useRemoveDeployment = () => {
 
     // TODO: Fix fees
     const response = await client.signAndBroadcast(creator, [msg], {
-      amount: [{ denom: "token", amount: "1" }],
+      amount: [{ denom: GHOSTCLOUD_DENOM, amount: GHOSTCLOUD_REMOVE_FEE }],
       gas: "100000000",
     })
 
