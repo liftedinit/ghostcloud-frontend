@@ -24,7 +24,7 @@ export default function AddressDisplay() {
   const { data: address, isLoading: isAddressLoading } = useFetchAddress()
   const displayAddress = truncateAddress(address ?? "", 4)
 
-  const { hasCopied, onCopy } = useClipboard(displayAddress)
+  const { hasCopied, onCopy } = useClipboard(address ?? "")
 
   return (
     <Flex alignItems={"center"}>
