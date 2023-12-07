@@ -1,7 +1,15 @@
-import { getSigningGhostcloudClient, ghostcloud } from "@liftedinit/gcjs"
+import {
+  getSigningGhostcloudClient,
+  ghostcloud,
+  cosmos,
+} from "@liftedinit/gcjs"
 import {
   GHOSTCLOUD_ADDRESS_PREFIX,
+  GHOSTCLOUD_CREATE_FEE,
+  GHOSTCLOUD_DENOM,
+  GHOSTCLOUD_REMOVE_FEE,
   GHOSTCLOUD_RPC_TARGET,
+  GHOSTCLOUD_UPDATE_FEE,
 } from "../config/ghostcloud-chain"
 import useWeb3AuthStore from "../store/web3-auth"
 import {
@@ -18,6 +26,7 @@ import {
 } from "react-query"
 import { QueryMetasResponse } from "@liftedinit/gcjs/dist/codegen/ghostcloud/ghostcloud/query"
 import { useDisplayError } from "../helpers/errors"
+import { Coin } from "@cosmjs/stargate"
 
 // Create a client for sending transactions to Ghostcloud RPC endpoint
 // The transaction signer is the given private key
@@ -81,7 +90,7 @@ export const useCreateDeployment = () => {
       creator,
       [msg],
       {
-        amount: [{ denom: "token", amount: "1" }],
+        amount: [{ denom: GHOSTCLOUD_DENOM, amount: GHOSTCLOUD_CREATE_FEE }],
         gas: "100000000",
       },
       data.memo,
@@ -100,6 +109,7 @@ export const useCreateDeployment = () => {
     mutationFn: create,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: "metas" })
+      queryClient.invalidateQueries({ queryKey: "balance" })
     },
   })
 }
@@ -150,7 +160,7 @@ export const useUpdateDeployment = () => {
       creator,
       [msg],
       {
-        amount: [{ denom: "token", amount: "1" }],
+        amount: [{ denom: GHOSTCLOUD_DENOM, amount: GHOSTCLOUD_UPDATE_FEE }],
         gas: "100000000",
       },
       data.memo,
@@ -169,6 +179,7 @@ export const useUpdateDeployment = () => {
     mutationFn: update,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: "metas" })
+      queryClient.invalidateQueries({ queryKey: "balance" })
     },
   })
 }
@@ -197,7 +208,7 @@ export const useRemoveDeployment = () => {
 
     // TODO: Fix fees
     const response = await client.signAndBroadcast(creator, [msg], {
-      amount: [{ denom: "token", amount: "1" }],
+      amount: [{ denom: GHOSTCLOUD_DENOM, amount: GHOSTCLOUD_REMOVE_FEE }],
       gas: "100000000",
     })
 
@@ -214,6 +225,7 @@ export const useRemoveDeployment = () => {
     mutationFn: remove,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: "metas" })
+      queryClient.invalidateQueries({ queryKey: "balance" })
     },
   })
 }
@@ -248,6 +260,64 @@ export const useFetchMetas = (): UseQueryResult<QueryMetasResponse, Error> => {
     queryFn: list,
     onError: error => {
       displayError("Failed to fetch deployments", error)
+    },
+  })
+}
+
+export const useFetchBalance = (): UseQueryResult<Coin, Error> => {
+  const store = useWeb3AuthStore()
+  const displayError = useDisplayError()
+
+  const fetchBalance = async () => {
+    const address = await store.getAddress()
+    if (address) {
+      const { createRPCQueryClient } = cosmos.ClientFactory
+      const client = await createRPCQueryClient({
+        rpcEndpoint: GHOSTCLOUD_RPC_TARGET,
+      })
+
+      // Replace this with the actual method to fetch the balance
+      const request = cosmos.bank.v1beta1.QueryBalanceRequest.fromPartial({
+        address: address,
+        denom: GHOSTCLOUD_DENOM,
+      })
+      const response = await client.cosmos.bank.v1beta1.balance(request)
+
+      if (response.balance) {
+        return response.balance
+      } else {
+        throw new Error("Failed to fetch balance")
+      }
+    }
+  }
+
+  return useQuery({
+    queryKey: "balance",
+    queryFn: fetchBalance,
+    onError: error => {
+      displayError("Failed to fetch balance", error)
+    },
+  })
+}
+
+export const useFetchAddress = (): UseQueryResult<string, Error> => {
+  const store = useWeb3AuthStore()
+  const displayError = useDisplayError()
+
+  const fetchAddress = async () => {
+    const address = await store.getAddress()
+    if (address) {
+      return address
+    } else {
+      throw new Error("Failed to fetch address")
+    }
+  }
+
+  return useQuery({
+    queryKey: "address",
+    queryFn: fetchAddress,
+    onError: error => {
+      displayError("Failed to fetch address", error)
     },
   })
 }

@@ -14,6 +14,8 @@ import Image from "next/image"
 import { GoLock, GoShieldCheck, GoSmiley } from "react-icons/go"
 import logoDark from "../public/logo192-white.png"
 import logoLight from "../public/logo192-black.png"
+import heroDark from "../public/hero-dark.png"
+import heroLight from "../public/hero-light.png"
 import React from "react"
 import { Feature } from "../components"
 import useAuthHandlers from "../hooks/useAuthHandlers"
@@ -28,11 +30,16 @@ export default function Home() {
     "modes.dark.altBackground",
   )
   const logo = useColorModeValue(logoLight, logoDark)
+  const hero = useColorModeValue(heroLight, heroDark)
   const { handleLogin } = useAuthHandlers()
 
   return (
     <>
-      <Container maxW="100%" bg={bgColor}>
+      <Container
+        maxW="100%"
+        bgImage={hero.src}
+        sx={{ backgroundSize: "cover" }}
+      >
         <Container maxW="4xl">
           <Box position="relative" py={8} px={4}>
             <Stack
