@@ -2,6 +2,7 @@
 
 import { ChainNamespaceType, CustomChainConfig } from "@web3auth/base"
 import { UIConfig } from "@web3auth/ui"
+import { GasPrice } from "@cosmjs/stargate"
 
 export const GHOSTCLOUD_ADDRESS_PREFIX =
   process.env["NEXT_PUBLIC_GHOSTCLOUD_ADDRESS_PREFIX"] ?? "gc"
@@ -21,15 +22,18 @@ export const GHOSTCLOUD_URL_DOMAIN =
   process.env["NEXT_PUBLIC_GHOSTCLOUD_URL_DOMAIN"] ?? "localhost:8880"
 export const GHOSTCLOUD_URL_SCHEME =
   process.env["NEXT_PUBLIC_GHOSTCLOUD_URL_SCHEME"] ?? "http"
-export const GHOSTCLOUD_CREATE_FEE =
-  process.env["NEXT_PUBLIC_GHOSTCLOUD_CREATE_FEE"] ?? "1"
-export const GHOSTCLOUD_UPDATE_FEE =
-  process.env["NEXT_PUBLIC_GHOSTCLOUD_UPDATE_FEE"] ?? "1"
-export const GHOSTCLOUD_REMOVE_FEE =
-  process.env["NEXT_PUBLIC_GHOSTCLOUD_REMOVE_FEE"] ?? "1"
+export const GHOSTCLOUD_GAS_PRICE_AMOUNT =
+  process.env["NEXT_PUBLIC_GHOSTCLOUD_GAS_PRICE"] ?? "0.000000025"
+export const GHOSTCLOUD_GAS_PRICE_DENOM =
+  process.env["NEXT_PUBLIC_GHOSTCLOUD_GAS_PRICE_DENOM"] ?? GHOSTCLOUD_DENOM
+export const GHOSTCLOUD_GAS_LIMIT_MULTIPLIER =
+  Number(process.env["NEXT_PUBLIC_GHOSTCLOUD_GAS_LIMIT_MULTIPLIER"]) || 1.5
 export const GHOSTCLOUD_LIGHT_LOGO = "/logo192-black.png"
 export const GHOSTCLOUD_DARK_LOGO = "/logo192-white.png"
 export const GHOSTCLOUD_MODAL_PRIMARY_COLOR = "gray"
+export const GHOSTCLOUD_GAS_PRICE = GasPrice.fromString(
+  GHOSTCLOUD_GAS_PRICE_AMOUNT.concat(GHOSTCLOUD_GAS_PRICE_DENOM),
+)
 
 export const GHOSTCLOUD_CHAIN_CONFIG = {
   chainNamespace: GHOSTCLOUD_CHAIN_NAMESPACE,
