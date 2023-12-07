@@ -1,13 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Export static site in production
+  ...(process.env.NEXT_OUTPUT === "export"
+    ? { output: process.env.NEXT_OUTPUT }
+    : {}),
   reactStrictMode: true,
   swcMinify: true,
-  // The following is required in order to use `yarn next export`
-  // experimental: {
-  //   images: {
-  //     unoptimized: true,
-  //   },
-  // },
+  // Disable image optimization on static site production build
+  images: {
+    unoptimized: process.env.NEXT_IMAGE_UNOPTIMIZE === "true",
+  },
 }
 
 module.exports = nextConfig
