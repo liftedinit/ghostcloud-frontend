@@ -21,6 +21,12 @@ export const GHOSTCLOUD_URL_DOMAIN =
   process.env["NEXT_PUBLIC_GHOSTCLOUD_URL_DOMAIN"] ?? "localhost:8880"
 export const GHOSTCLOUD_URL_SCHEME =
   process.env["NEXT_PUBLIC_GHOSTCLOUD_URL_SCHEME"] ?? "http"
+export const GHOSTCLOUD_CREATE_FEE =
+  process.env["NEXT_PUBLIC_GHOSTCLOUD_CREATE_FEE"] ?? "1"
+export const GHOSTCLOUD_UPDATE_FEE =
+  process.env["NEXT_PUBLIC_GHOSTCLOUD_UPDATE_FEE"] ?? "1"
+export const GHOSTCLOUD_REMOVE_FEE =
+  process.env["NEXT_PUBLIC_GHOSTCLOUD_REMOVE_FEE"] ?? "1"
 export const GHOSTCLOUD_LIGHT_LOGO = "/logo192-black.png"
 export const GHOSTCLOUD_DARK_LOGO = "/logo192-white.png"
 export const GHOSTCLOUD_MODAL_PRIMARY_COLOR = "gray"
