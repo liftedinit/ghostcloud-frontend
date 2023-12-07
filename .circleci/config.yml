@@ -24,8 +24,14 @@ jobs:
           command: yarn install
       - run:
           command: yarn build
+      - run:
+          command: mkdir -p artifacts
+      - run:
+          command: tar czvf artifacts/ghostcloud-cosmos-fe_${CIRCLE_SHA1}.tar.gz out
+      - run:
+          command: shasum artifacts/ghostcloud-cosmos-fe_${CIRCLE_SHA1}.tar.gz > artifacts/ghostcloud-cosmos-fe_${CIRCLE_SHA1}.txt
       - store_artifacts:
-          path: out
+          path: artifacts
 
 workflows:
   ci:
