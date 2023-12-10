@@ -2,8 +2,8 @@ import "@testing-library/jest-dom"
 import { render, screen } from "@testing-library/react"
 import Home from "../index"
 
-describe("home", () => {
-  it("renders the hero section", () => {
+describe("Home", () => {
+  it("renders the home page", () => {
     render(<Home />)
     expect(
       screen.getByText("Decentralized Web Hosting for Humans"),
