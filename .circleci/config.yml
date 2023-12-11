@@ -32,5 +32,5 @@ jobs:
 workflows:
   ci:
     jobs:
-      - build:
+      - build_test:
           node_version: "20.9.0"
