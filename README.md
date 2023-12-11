@@ -1,3 +1,6 @@
+[![ci](https://img.shields.io/circleci/build/gh/liftedinit/ghostcloud-cosmos-frontend)](https://app.circleci.com/pipelines/gh/liftedinit/ghostcloud-cosmos-frontend)
+[![coverage](https://img.shields.io/codecov/c/gh/liftedinit/ghostcloud-cosmos-frontend)](https://app.codecov.io/gh/liftedinit/ghostcloud-cosmos-frontend)
+
 This is a Cosmos App project bootstrapped with
 [`create-cosmos-app`](https://github.com/cosmology-tech/create-cosmos-app).
 
