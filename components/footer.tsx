@@ -40,13 +40,13 @@ export default function Footer() {
           lineHeight={2.5}
         >
           <Link href="/" passHref>
-            <ChakraLink>Home</ChakraLink>
+            Home
           </Link>
           <Link href="/terms" passHref>
-            <ChakraLink>Terms Of Service</ChakraLink>
+            Terms Of Service
           </Link>
           <Link href="/privacy" passHref>
-            <ChakraLink>Privacy Policy</ChakraLink>
+            Privacy Policy
           </Link>
         </Stack>
       </Container>
