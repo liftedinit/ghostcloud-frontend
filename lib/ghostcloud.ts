@@ -1,20 +1,24 @@
 import {
-  getSigningGhostcloudClient,
-  ghostcloud,
   cosmos,
+  cosmosAminoConverters,
+  cosmosProtoRegistry,
+  ghostcloud,
+  ghostcloudAminoConverters,
+  ghostcloudProtoRegistry,
 } from "@liftedinit/gcjs"
 import {
   GHOSTCLOUD_ADDRESS_PREFIX,
-  GHOSTCLOUD_CREATE_FEE,
   GHOSTCLOUD_DENOM,
-  GHOSTCLOUD_REMOVE_FEE,
+  GHOSTCLOUD_GAS_LIMIT_MULTIPLIER,
+  GHOSTCLOUD_GAS_PRICE,
   GHOSTCLOUD_RPC_TARGET,
-  GHOSTCLOUD_UPDATE_FEE,
 } from "../config/ghostcloud-chain"
 import useWeb3AuthStore from "../store/web3-auth"
 import {
   DirectSecp256k1Wallet,
   OfflineDirectSigner,
+  GeneratedType,
+  Registry,
 } from "@cosmjs/proto-signing"
 import { DeploymentData } from "../components/create-deployment"
 import { fileToArrayBuffer } from "../helpers/files"
@@ -26,20 +30,49 @@ import {
 } from "react-query"
 import { QueryMetasResponse } from "@liftedinit/gcjs/dist/codegen/ghostcloud/ghostcloud/query"
 import { useDisplayError } from "../helpers/errors"
-import { Coin } from "@cosmjs/stargate"
+import {
+  AminoTypes,
+  calculateFee,
+  Coin,
+  GasPrice,
+  SigningStargateClient,
+} from "@cosmjs/stargate"
+
+async function createSigner(pk: Buffer) {
+  const getSignerFromKey = async (): Promise<OfflineDirectSigner> => {
+    return DirectSecp256k1Wallet.fromKey(pk, GHOSTCLOUD_ADDRESS_PREFIX)
+  }
+  return await getSignerFromKey()
+}
+async function createStargateSigningClient(pk: Buffer) {
+  const signer = await createSigner(pk)
+  const protoRegistry: ReadonlyArray<[string, GeneratedType]> = [
+    ...cosmosProtoRegistry,
+    ...ghostcloudProtoRegistry,
+  ]
+
+  const aminoConverters = {
+    ...cosmosAminoConverters,
+    ...ghostcloudAminoConverters,
+  }
+
+  const registry = new Registry(protoRegistry)
+  const aminoTypes = new AminoTypes(aminoConverters)
+  return await SigningStargateClient.connectWithSigner(
+    GHOSTCLOUD_RPC_TARGET,
+    signer,
+    {
+      registry: registry,
+      aminoTypes: aminoTypes,
+      gasPrice: GHOSTCLOUD_GAS_PRICE,
+    },
+  )
+}
 
 // Create a client for sending transactions to Ghostcloud RPC endpoint
 // The transaction signer is the given private key
 async function createGhostcloudRpcClient(pk: Buffer) {
-  const getSignerFromKey = async (): Promise<OfflineDirectSigner> => {
-    return DirectSecp256k1Wallet.fromKey(pk, GHOSTCLOUD_ADDRESS_PREFIX)
-  }
-  const signer: OfflineDirectSigner = await getSignerFromKey()
-
-  return await getSigningGhostcloudClient({
-    rpcEndpoint: GHOSTCLOUD_RPC_TARGET,
-    signer: signer,
-  })
+  return await createStargateSigningClient(pk)
 }
 
 // Create a deployment message from the given deployment data
@@ -85,17 +118,17 @@ export const useCreateDeployment = () => {
       Buffer.from(await store.getPrivateKey(), "hex"),
     )
     const msg = await createDeploymentMsg(data, creator)
-    // TODO: Fix fees
+    const gasEstimation = await client.simulate(creator, [msg], "")
+    const fee = calculateFee(
+      Math.round(gasEstimation * GHOSTCLOUD_GAS_LIMIT_MULTIPLIER),
+      GHOSTCLOUD_GAS_PRICE,
+    )
     const response = await client.signAndBroadcast(
       creator,
       [msg],
-      {
-        amount: [{ denom: GHOSTCLOUD_DENOM, amount: GHOSTCLOUD_CREATE_FEE }],
-        gas: "100000000",
-      },
+      fee,
       data.memo,
     )
-
     if (response.code) {
       throw new Error(
         `Deployment creation failed with error code: ${response.code}. Raw log: ${response.rawLog}`,
@@ -155,14 +188,15 @@ export const useUpdateDeployment = () => {
       Buffer.from(await store.getPrivateKey(), "hex"),
     )
     const msg = await updateDeploymentMsg(data, creator)
-    // TODO: Fix fees
+    const gasEstimation = await client.simulate(creator, [msg], "")
+    const fee = calculateFee(
+      Math.round(gasEstimation * GHOSTCLOUD_GAS_LIMIT_MULTIPLIER),
+      GHOSTCLOUD_GAS_PRICE,
+    )
     const response = await client.signAndBroadcast(
       creator,
       [msg],
-      {
-        amount: [{ denom: GHOSTCLOUD_DENOM, amount: GHOSTCLOUD_UPDATE_FEE }],
-        gas: "100000000",
-      },
+      fee,
       data.memo,
     )
 
@@ -205,12 +239,12 @@ export const useRemoveDeployment = () => {
       Buffer.from(await store.getPrivateKey(), "hex"),
     )
     const msg = await removeDeploymentMsg(name, creator)
-
-    // TODO: Fix fees
-    const response = await client.signAndBroadcast(creator, [msg], {
-      amount: [{ denom: GHOSTCLOUD_DENOM, amount: GHOSTCLOUD_REMOVE_FEE }],
-      gas: "100000000",
-    })
+    const gasEstimation = await client.simulate(creator, [msg], "")
+    const fee = calculateFee(
+      Math.round(gasEstimation * GHOSTCLOUD_GAS_LIMIT_MULTIPLIER),
+      GHOSTCLOUD_GAS_PRICE,
+    )
+    const response = await client.signAndBroadcast(creator, [msg], fee)
 
     if (response.code) {
       throw new Error(

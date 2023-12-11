@@ -6,7 +6,6 @@ import {
   GridItem,
   HStack,
   Icon,
-  Link as ChakraLink,
   useColorMode,
   useColorModeValue,
   VStack,
@@ -17,7 +16,6 @@ import logoDark from "../public/logo-white.png"
 import { BsFillMoonStarsFill, BsFillSunFill } from "react-icons/bs"
 import Menu from "./menu"
 import AddressDisplay from "./address-display"
-import { useEffect, useState } from "react"
 import useWeb3AuthStore from "../store/web3-auth"
 import BalanceDisplay from "./balance-display"
 
@@ -63,9 +61,7 @@ function Header() {
               py={2}
             >
               <Link href="/" passHref>
-                <ChakraLink p={2}>
-                  <Image src={logo} alt="Header Logo" height={16} width={206} />
-                </ChakraLink>
+                <Image src={logo} alt="Header Logo" height={16} width={206} />
               </Link>
             </GridItem>
             <GridItem
