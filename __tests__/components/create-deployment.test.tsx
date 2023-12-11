@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { render, screen, fireEvent, waitFor } from "@testing-library/react"
-import CreateDeploymentModal from "../create-deployment"
+import CreateDeploymentModal from "../../components/create-deployment"
 
 jest.mock("react-query", () => ({
   useQuery: jest.fn(),

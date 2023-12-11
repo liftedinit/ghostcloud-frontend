@@ -1,8 +1,8 @@
 // @ts-nocheck
 import { render, screen, fireEvent } from "@testing-library/react"
-import Dashboard from "../dashboard"
-import useWeb3AuthStore from "../../store/web3-auth"
 import { useQuery } from "react-query"
+import Dashboard from "../../components/dashboard"
+import useWeb3AuthStore from "../../store/web3-auth"
 
 jest.mock("react-query", () => ({
   useQuery: jest.fn(),

@@ -1,8 +1,8 @@
 // @ts-nocheck
 import "@testing-library/jest-dom"
 import { render, screen } from "@testing-library/react"
-import AddressDisplay from "../address-display"
 import { useQuery } from "react-query"
+import AddressDisplay from "../../components/address-display"
 
 jest.mock("react-query", () => ({
   useQuery: jest.fn(),

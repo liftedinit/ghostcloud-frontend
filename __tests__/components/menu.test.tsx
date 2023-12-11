@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { render, screen, fireEvent } from "@testing-library/react"
-import Menu from "../menu"
+import Menu from "../../components/menu"
 import useWeb3AuthStore from "../../store/web3-auth"
 import useAuthHandlers from "../../hooks/useAuthHandlers"
 
