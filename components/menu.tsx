@@ -20,7 +20,13 @@ const Menu: React.FC<LoginProps> = () => {
 
   return (
     <ChakraMenu>
-      <MenuButton as={Button} px={0} variant="outline" justifySelf="end">
+      <MenuButton
+        as={Button}
+        px={0}
+        variant="outline"
+        justifySelf="end"
+        data-testid="menu"
+      >
         <Icon as={TfiMenu} />
       </MenuButton>
       <MenuList>

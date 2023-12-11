@@ -4,9 +4,10 @@ version: 2.1
 
 orbs:
   node: circleci/node@5.1.0
+  codecov: codecov/codecov@3.2.4
 
 jobs:
-  build:
+  build_test:
     parameters:
       node_version:
         type: string
@@ -24,9 +25,12 @@ jobs:
           command: yarn install
       - run:
           command: yarn build
+      - run:
+          command: yarn coverage
+      - codecov/upload
 
 workflows:
   ci:
     jobs:
-      - build:
+      - build_test:
           node_version: "20.9.0"

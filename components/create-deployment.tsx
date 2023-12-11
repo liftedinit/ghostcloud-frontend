@@ -96,26 +96,45 @@ const CreateDeploymentModal = ({
 
                 <FormControl isRequired mt={4}>
                   <FormLabel>Description</FormLabel>
-                  <Field as={Textarea} name="description" type="textarea" />
+                  <Field
+                    as={Textarea}
+                    name="description"
+                    type="textarea"
+                    data-testid="description"
+                  />
                   <ErrorMessage name="description" component={Text} />
                 </FormControl>
 
                 <FormControl mt={4}>
                   <FormLabel>Domain</FormLabel>
-                  <Field as={Input} name="domain" type="text" />
+                  <Field
+                    as={Input}
+                    name="domain"
+                    type="text"
+                    data-testid="domain"
+                  />
                   <ErrorMessage name="domain" component={Text} />
                 </FormControl>
 
                 <FormControl mt={4}>
                   <FormLabel>Memo</FormLabel>
-                  <Field as={Textarea} name="memo" type="textarea" />
+                  <Field
+                    as={Textarea}
+                    name="memo"
+                    type="textarea"
+                    data-testid="memo"
+                  />
                   <ErrorMessage name="memo" component={Text} />
                 </FormControl>
 
                 <FormControl isRequired mt={4}>
                   <FormLabel>File (Max 5MB)</FormLabel>
                   <Field name="file" component={FileUpload} />
-                  <ErrorMessage name="file" component={Text} />
+                  <ErrorMessage
+                    name="file"
+                    component={Text}
+                    data-testid="file"
+                  />
                 </FormControl>
               </ModalBody>
               <ModalFooter>

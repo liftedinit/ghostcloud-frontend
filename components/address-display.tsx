@@ -35,6 +35,7 @@ export default function AddressDisplay() {
         ml={2}
         px={1}
         borderRadius="md"
+        data-testid="address"
       >
         {isAddressLoading ? <Spinner /> : displayAddress}
       </Box>

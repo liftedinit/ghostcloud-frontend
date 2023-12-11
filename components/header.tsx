@@ -6,7 +6,6 @@ import {
   GridItem,
   HStack,
   Icon,
-  Link as ChakraLink,
   useColorMode,
   useColorModeValue,
   VStack,
@@ -17,7 +16,6 @@ import logoDark from "../public/logo-white.png"
 import { BsFillMoonStarsFill, BsFillSunFill } from "react-icons/bs"
 import Menu from "./menu"
 import AddressDisplay from "./address-display"
-import { useEffect, useState } from "react"
 import useWeb3AuthStore from "../store/web3-auth"
 import BalanceDisplay from "./balance-display"
 
@@ -79,6 +77,7 @@ function Header() {
                   px={0}
                   onClick={toggleColorMode}
                   justifySelf="end"
+                  data-testid="theme-toggle"
                 >
                   <Icon
                     as={
