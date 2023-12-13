@@ -2,6 +2,8 @@
 # The Lifted Initiative
 version: 2.1
 
+node_version: &node_version '20.9.0'
+
 orbs:
   node: circleci/node@5.1.0
   codecov: codecov/codecov@3.2.4
@@ -22,15 +24,31 @@ jobs:
       - node/install-packages:
           pkg-manager: yarn
       - run:
-          command: yarn install
-      - run:
           command: yarn build
       - run:
           command: yarn coverage
       - codecov/upload
+  security:
+    parameters:
+      node_version:
+        type: string
+    executor:
+      name: node/default
+      tag: << parameters.node_version >>
+    resource_class: medium
+    steps:
+      - checkout
+      - run:
+          command: node -v && yarn -v
+      - node/install-packages:
+          pkg-manager: yarn
+      - run:
+          command: yarn audit
 
 workflows:
   ci:
     jobs:
       - build_test:
-          node_version: "20.9.0"
+          node_version: *node_version
+      - security:
+          node_version: *node_version
