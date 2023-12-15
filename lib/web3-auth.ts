@@ -1,7 +1,9 @@
 import { Web3Auth } from "@web3auth/modal"
 import { OpenloginAdapter } from "@web3auth/openlogin-adapter"
 import {
+  WEB3AUTH_ADAPTER_SETTINGS,
   WEB3AUTH_CLIENT_ID,
+  WEB3AUTH_LOGIN_SETTINGS,
   WEB3AUTH_MODAL_CONFIG,
   WEB3AUTH_NETWORK,
 } from "../config/web3-auth"
@@ -23,9 +25,8 @@ export async function web3AuthInitProvider(
       uiConfig: uiConfig,
     })
     const openloginAdapter = new OpenloginAdapter({
-      adapterSettings: {
-        uxMode: "popup",
-      },
+      adapterSettings: WEB3AUTH_ADAPTER_SETTINGS,
+      loginSettings: WEB3AUTH_LOGIN_SETTINGS,
     })
     web3auth.configureAdapter(openloginAdapter)
 
