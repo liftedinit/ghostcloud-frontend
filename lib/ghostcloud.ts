@@ -34,17 +34,17 @@ import {
   AminoTypes,
   calculateFee,
   Coin,
-  GasPrice,
   SigningStargateClient,
 } from "@cosmjs/stargate"
+import { hexToBytes } from "@metamask/utils"
 
-async function createSigner(pk: Buffer) {
+async function createSigner(pk: Uint8Array) {
   const getSignerFromKey = async (): Promise<OfflineDirectSigner> => {
     return DirectSecp256k1Wallet.fromKey(pk, GHOSTCLOUD_ADDRESS_PREFIX)
   }
   return await getSignerFromKey()
 }
-async function createStargateSigningClient(pk: Buffer) {
+async function createStargateSigningClient(pk: Uint8Array) {
   const signer = await createSigner(pk)
   const protoRegistry: ReadonlyArray<[string, GeneratedType]> = [
     ...cosmosProtoRegistry,
@@ -71,7 +71,7 @@ async function createStargateSigningClient(pk: Buffer) {
 
 // Create a client for sending transactions to Ghostcloud RPC endpoint
 // The transaction signer is the given private key
-async function createGhostcloudRpcClient(pk: Buffer) {
+async function createGhostcloudRpcClient(pk: Uint8Array) {
   return await createStargateSigningClient(pk)
 }
 
@@ -115,7 +115,7 @@ export const useCreateDeployment = () => {
     }
 
     const client = await createGhostcloudRpcClient(
-      Buffer.from(await store.getPrivateKey(), "hex"),
+      hexToBytes(await store.getPrivateKey()),
     )
     const msg = await createDeploymentMsg(data, creator)
     const gasEstimation = await client.simulate(creator, [msg], "")
@@ -185,7 +185,7 @@ export const useUpdateDeployment = () => {
     }
 
     const client = await createGhostcloudRpcClient(
-      Buffer.from(await store.getPrivateKey(), "hex"),
+      hexToBytes(await store.getPrivateKey()),
     )
     const msg = await updateDeploymentMsg(data, creator)
     const gasEstimation = await client.simulate(creator, [msg], "")
@@ -236,7 +236,7 @@ export const useRemoveDeployment = () => {
     }
 
     const client = await createGhostcloudRpcClient(
-      Buffer.from(await store.getPrivateKey(), "hex"),
+      hexToBytes(await store.getPrivateKey()),
     )
     const msg = await removeDeploymentMsg(name, creator)
     const gasEstimation = await client.simulate(creator, [msg], "")
