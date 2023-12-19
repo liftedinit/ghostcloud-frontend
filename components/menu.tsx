@@ -11,12 +11,14 @@ import { TfiMenu } from "react-icons/tfi"
 import Link from "next/link"
 import useAuthHandlers from "../hooks/useAuthHandlers"
 import React from "react"
+import usePaymentHandler from "../hooks/usePaymentHandler"
 
 type LoginProps = {}
 
 const Menu: React.FC<LoginProps> = () => {
   const store = useWeb3AuthStore() // To access the provider
   const { handleLogin, handleLogout } = useAuthHandlers()
+  const { handlePayment } = usePaymentHandler()
 
   return (
     <ChakraMenu>
@@ -32,6 +34,7 @@ const Menu: React.FC<LoginProps> = () => {
       <MenuList>
         {store.provider ? (
           <>
+            <MenuItem onClick={handlePayment}>Buy Tokens</MenuItem>
             <Link href="/dashboard" passHref>
               <MenuItem>Dashboard</MenuItem>
             </Link>
