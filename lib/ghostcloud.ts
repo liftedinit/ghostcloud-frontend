@@ -2,6 +2,7 @@ import {
   cosmos,
   cosmosAminoConverters,
   cosmosProtoRegistry,
+  getSigningCosmosClient,
   ghostcloud,
   ghostcloudAminoConverters,
   ghostcloudProtoRegistry,
@@ -13,30 +14,27 @@ import {
   GHOSTCLOUD_GAS_PRICE,
   GHOSTCLOUD_RPC_TARGET,
 } from "../config/ghostcloud-chain"
-import useWeb3AuthStore from "../store/web3-auth"
 import {
+  DirectSecp256k1HdWallet,
   DirectSecp256k1Wallet,
-  OfflineDirectSigner,
   GeneratedType,
+  OfflineDirectSigner,
   Registry,
 } from "@cosmjs/proto-signing"
 import { DeploymentData } from "../components/create-deployment"
-import { fileToArrayBuffer } from "../helpers/files"
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-  UseQueryResult,
-} from "react-query"
-import { QueryMetasResponse } from "@liftedinit/gcjs/dist/codegen/ghostcloud/ghostcloud/query"
-import { useDisplayError } from "../helpers/errors"
 import {
   AminoTypes,
   calculateFee,
-  Coin,
   SigningStargateClient,
 } from "@cosmjs/stargate"
 import { hexToBytes } from "@metamask/utils"
+import { GetTxsEventRequest } from "cosmjs-types/cosmos/tx/v1beta1/service"
+import {
+  createCreateDeploymentMsg,
+  createRemoveDeploymentMsg,
+  createSendMsg,
+  createUpdateDeploymentMsg,
+} from "./message_composer"
 
 async function createSigner(pk: Uint8Array) {
   const getSignerFromKey = async (): Promise<OfflineDirectSigner> => {
@@ -75,283 +73,155 @@ async function createGhostcloudRpcClient(pk: Uint8Array) {
   return await createStargateSigningClient(pk)
 }
 
-// Create a deployment message from the given deployment data
-async function createDeploymentMsg(data: DeploymentData, creator: string) {
-  let payload
-  if (data.file) {
-    const buffer = await fileToArrayBuffer(data.file)
-    payload = ghostcloud.ghostcloud.Payload.fromPartial({
-      archive: ghostcloud.ghostcloud.Archive.fromPartial({
-        type: ghostcloud.ghostcloud.ArchiveType.Zip,
-        content: buffer,
-      }),
-    })
+export const createDeployment = async (
+  data: DeploymentData,
+  creator: string,
+  pk: string,
+) => {
+  const client = await createGhostcloudRpcClient(hexToBytes(pk))
+  const msg = await createCreateDeploymentMsg(data, creator)
+  const gasEstimation = await client.simulate(creator, [msg], "")
+  const fee = calculateFee(
+    Math.round(gasEstimation * GHOSTCLOUD_GAS_LIMIT_MULTIPLIER),
+    GHOSTCLOUD_GAS_PRICE,
+  )
+  const response = await client.signAndBroadcast(creator, [msg], fee, data.memo)
+  if (response.code) {
+    throw new Error(
+      `Deployment creation failed with error code: ${response.code}. Raw log: ${response.rawLog}`,
+    )
   }
 
-  const { createDeployment } = ghostcloud.ghostcloud.MessageComposer.withTypeUrl
-  return createDeployment({
-    meta: {
-      creator,
-      name: data.name,
-      description: data.description,
-      domain: data.domain,
-    },
-    payload,
-  })
+  return response
 }
 
-// Send a deployment creation transaction to the Ghostcloud RPC endpoint
-export const useCreateDeployment = () => {
-  const store = useWeb3AuthStore()
-  const queryClient = useQueryClient()
-  const create = async (data: DeploymentData | null) => {
-    if (!data) {
-      throw new Error("Deployment data is empty.")
-    }
+export const updateDeployment = async (
+  data: DeploymentData,
+  creator: string,
+  pk: string,
+) => {
+  const client = await createGhostcloudRpcClient(hexToBytes(pk))
+  const msg = await createUpdateDeploymentMsg(data, creator)
+  const gasEstimation = await client.simulate(creator, [msg], "")
+  const fee = calculateFee(
+    Math.round(gasEstimation * GHOSTCLOUD_GAS_LIMIT_MULTIPLIER),
+    GHOSTCLOUD_GAS_PRICE,
+  )
+  const response = await client.signAndBroadcast(creator, [msg], fee, data.memo)
 
-    const creator = await store.getAddress()
-    if (!creator) {
-      throw new Error("Creator address is empty.")
-    }
-
-    const client = await createGhostcloudRpcClient(
-      hexToBytes(await store.getPrivateKey()),
+  if (response.code) {
+    throw new Error(
+      `Deployment update failed with error code: ${response.code}. Raw log: ${response.rawLog}`,
     )
-    const msg = await createDeploymentMsg(data, creator)
-    const gasEstimation = await client.simulate(creator, [msg], "")
-    const fee = calculateFee(
-      Math.round(gasEstimation * GHOSTCLOUD_GAS_LIMIT_MULTIPLIER),
-      GHOSTCLOUD_GAS_PRICE,
-    )
-    const response = await client.signAndBroadcast(
-      creator,
-      [msg],
-      fee,
-      data.memo,
-    )
-    if (response.code) {
-      throw new Error(
-        `Deployment creation failed with error code: ${response.code}. Raw log: ${response.rawLog}`,
-      )
-    }
-
-    return response
   }
 
-  return useMutation({
-    mutationFn: create,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: "metas" })
-      queryClient.invalidateQueries({ queryKey: "balance" })
-    },
-  })
+  return response
 }
+export const removeDeployment = async (
+  name: string,
+  creator: string,
+  pk: string,
+) => {
+  const client = await createGhostcloudRpcClient(hexToBytes(pk))
+  const msg = createRemoveDeploymentMsg(name, creator)
+  const gasEstimation = await client.simulate(creator, [msg], "")
+  const fee = calculateFee(
+    Math.round(gasEstimation * GHOSTCLOUD_GAS_LIMIT_MULTIPLIER),
+    GHOSTCLOUD_GAS_PRICE,
+  )
+  const response = await client.signAndBroadcast(creator, [msg], fee)
 
-async function updateDeploymentMsg(data: DeploymentData, creator: string) {
-  let payload
-  if (data.file) {
-    const buffer = await fileToArrayBuffer(data.file)
-    payload = ghostcloud.ghostcloud.Payload.fromPartial({
-      archive: ghostcloud.ghostcloud.Archive.fromPartial({
-        type: ghostcloud.ghostcloud.ArchiveType.Zip,
-        content: buffer,
-      }),
-    })
-  }
-
-  const { updateDeployment } = ghostcloud.ghostcloud.MessageComposer.withTypeUrl
-  return updateDeployment({
-    meta: {
-      creator,
-      name: data.name,
-      description: data.description,
-      domain: data.domain,
-    },
-    payload,
-  })
-}
-
-export const useUpdateDeployment = () => {
-  const store = useWeb3AuthStore()
-  const queryClient = useQueryClient()
-  const update = async (data: DeploymentData | null) => {
-    if (!data) {
-      throw new Error("Deployment data is empty.")
-    }
-
-    const creator = await store.getAddress()
-    if (!creator) {
-      throw new Error("Creator address is empty.")
-    }
-
-    const client = await createGhostcloudRpcClient(
-      hexToBytes(await store.getPrivateKey()),
+  if (response.code) {
+    throw new Error(
+      `Deployment update failed with error code: ${response.code}. Raw log: ${response.rawLog}`,
     )
-    const msg = await updateDeploymentMsg(data, creator)
-    const gasEstimation = await client.simulate(creator, [msg], "")
-    const fee = calculateFee(
-      Math.round(gasEstimation * GHOSTCLOUD_GAS_LIMIT_MULTIPLIER),
-      GHOSTCLOUD_GAS_PRICE,
-    )
-    const response = await client.signAndBroadcast(
-      creator,
-      [msg],
-      fee,
-      data.memo,
-    )
-
-    if (response.code) {
-      throw new Error(
-        `Deployment update failed with error code: ${response.code}. Raw log: ${response.rawLog}`,
-      )
-    }
-
-    return response
   }
 
-  return useMutation({
-    mutationFn: update,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: "metas" })
-      queryClient.invalidateQueries({ queryKey: "balance" })
-    },
-  })
+  return response
 }
 
-async function removeDeploymentMsg(name: string, creator: string) {
-  const { removeDeployment } = ghostcloud.ghostcloud.MessageComposer.withTypeUrl
-  return removeDeployment({
-    creator,
-    name: name,
+export const listDeployments = async (address: string) => {
+  const { createRPCQueryClient } = ghostcloud.ClientFactory
+  const client = await createRPCQueryClient({
+    rpcEndpoint: GHOSTCLOUD_RPC_TARGET,
   })
+
+  const filter = ghostcloud.ghostcloud.Filter.fromPartial({
+    field: ghostcloud.ghostcloud.Filter_Field.CREATOR,
+    operator: ghostcloud.ghostcloud.Filter_Operator.EQUAL,
+    value: address,
+  })
+  const request = ghostcloud.ghostcloud.QueryMetasRequest.fromPartial({
+    filters: [filter],
+  })
+  return await client.ghostcloud.ghostcloud.metas(request)
 }
 
-export const useRemoveDeployment = () => {
-  const store = useWeb3AuthStore()
-  const queryClient = useQueryClient()
-  const remove = async (name: string) => {
-    const creator = await store.getAddress()
-    if (!creator) {
-      throw new Error("Creator address is empty.")
-    }
+export const fetchBalance = async (address: string) => {
+  const { createRPCQueryClient } = cosmos.ClientFactory
+  const client = await createRPCQueryClient({
+    rpcEndpoint: GHOSTCLOUD_RPC_TARGET,
+  })
 
-    const client = await createGhostcloudRpcClient(
-      hexToBytes(await store.getPrivateKey()),
-    )
-    const msg = await removeDeploymentMsg(name, creator)
-    const gasEstimation = await client.simulate(creator, [msg], "")
-    const fee = calculateFee(
-      Math.round(gasEstimation * GHOSTCLOUD_GAS_LIMIT_MULTIPLIER),
-      GHOSTCLOUD_GAS_PRICE,
-    )
-    const response = await client.signAndBroadcast(creator, [msg], fee)
+  // Replace this with the actual method to fetch the balance
+  const request = cosmos.bank.v1beta1.QueryBalanceRequest.fromPartial({
+    address: address,
+    denom: GHOSTCLOUD_DENOM,
+  })
+  const response = await client.cosmos.bank.v1beta1.balance(request)
 
-    if (response.code) {
-      throw new Error(
-        `Deployment update failed with error code: ${response.code}. Raw log: ${response.rawLog}`,
-      )
-    }
-
-    return response
+  if (response.balance) {
+    return response.balance
+  } else {
+    throw new Error("Failed to fetch balance")
   }
-
-  return useMutation({
-    mutationFn: remove,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: "metas" })
-      queryClient.invalidateQueries({ queryKey: "balance" })
-    },
-  })
 }
 
-// Query the Ghostcloud RPC endpoint for deployments created by the current user
-export const useFetchMetas = (): UseQueryResult<QueryMetasResponse, Error> => {
-  const store = useWeb3AuthStore()
-  const displayError = useDisplayError()
-
-  const list = async () => {
-    const address = await store.getAddress()
-    if (address) {
-      const { createRPCQueryClient } = ghostcloud.ClientFactory
-      const client = await createRPCQueryClient({
-        rpcEndpoint: GHOSTCLOUD_RPC_TARGET,
-      })
-
-      const filter = ghostcloud.ghostcloud.Filter.fromPartial({
-        field: ghostcloud.ghostcloud.Filter_Field.CREATOR,
-        operator: ghostcloud.ghostcloud.Filter_Operator.EQUAL,
-        value: address,
-      })
-      const request = ghostcloud.ghostcloud.QueryMetasRequest.fromPartial({
-        filters: [filter],
-      })
-      return await client.ghostcloud.ghostcloud.metas(request)
-    }
-  }
-
-  return useQuery({
-    queryKey: "metas",
-    queryFn: list,
-    onError: error => {
-      displayError("Failed to fetch deployments", error)
-    },
+export async function fetchTransferEvents(sender: string, recipient: string) {
+  const { createRPCQueryClient } = cosmos.ClientFactory
+  const client = await createRPCQueryClient({
+    rpcEndpoint: GHOSTCLOUD_RPC_TARGET,
   })
+
+  // WARNING: At some point, it will get too slow to search the entire blockchain for transactions
+  // TODO: I don't know why but I can't mix `events type` in the same query.
+  //       E.g.,
+  //         ["transfer.sender='gc1664mxf4257456y3aqfvu75tgqh7kzv9ygzwwuf'", `transfer.recipient='${address}'`] // WORKS
+  //         ["message.sender='gc1664mxf4257456y3aqfvu75tgqh7kzv9ygzwwuf'", `transfer.recipient='${address}'`]  // DOESN'T WORKS
+  //         ["message.sender='gc1664mxf4257456y3aqfvu75tgqh7kzv9ygzwwuf'", "message.action='/cosmos.bank.v1beta1.MsgSend'"]  // WORKS
+  const query = GetTxsEventRequest.fromPartial({
+    events: [
+      `transfer.sender='${sender}'`,
+      `transfer.recipient='${recipient}'`,
+    ],
+  })
+  const response = await client.cosmos.tx.v1beta1.getTxsEvent(query)
+  return response.txs
 }
 
-export const useFetchBalance = (): UseQueryResult<Coin, Error> => {
-  const store = useWeb3AuthStore()
-  const displayError = useDisplayError()
-
-  const fetchBalance = async () => {
-    const address = await store.getAddress()
-    if (address) {
-      const { createRPCQueryClient } = cosmos.ClientFactory
-      const client = await createRPCQueryClient({
-        rpcEndpoint: GHOSTCLOUD_RPC_TARGET,
-      })
-
-      // Replace this with the actual method to fetch the balance
-      const request = cosmos.bank.v1beta1.QueryBalanceRequest.fromPartial({
-        address: address,
-        denom: GHOSTCLOUD_DENOM,
-      })
-      const response = await client.cosmos.bank.v1beta1.balance(request)
-
-      if (response.balance) {
-        return response.balance
-      } else {
-        throw new Error("Failed to fetch balance")
-      }
-    }
-  }
-
-  return useQuery({
-    queryKey: "balance",
-    queryFn: fetchBalance,
-    onError: error => {
-      displayError("Failed to fetch balance", error)
-    },
+// TODO: Refactor this function to not use mnemonic
+export async function sendTokens(
+  to: string,
+  mnemonic: string,
+  amount: number,
+  invoiceId: string,
+  paymentId: string,
+  purchaseId: string,
+) {
+  const signer = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
+    prefix: GHOSTCLOUD_ADDRESS_PREFIX,
   })
-}
-
-export const useFetchAddress = (): UseQueryResult<string, Error> => {
-  const store = useWeb3AuthStore()
-  const displayError = useDisplayError()
-
-  const fetchAddress = async () => {
-    const address = await store.getAddress()
-    if (address) {
-      return address
-    } else {
-      throw new Error("Failed to fetch address")
-    }
-  }
-
-  return useQuery({
-    queryKey: "address",
-    queryFn: fetchAddress,
-    onError: error => {
-      displayError("Failed to fetch address", error)
-    },
+  const signerAddress = (await signer.getAccounts())[0].address
+  const client = await getSigningCosmosClient({
+    rpcEndpoint: GHOSTCLOUD_RPC_TARGET,
+    signer: signer,
   })
+  const msg = createSendMsg(signerAddress, to, amount.toString())
+  const gasEstimation = await client.simulate(signerAddress, [msg], "")
+  const fee = calculateFee(
+    Math.round(gasEstimation * GHOSTCLOUD_GAS_LIMIT_MULTIPLIER),
+    GHOSTCLOUD_GAS_PRICE,
+  )
+  const memo = `invoice_id: ${invoiceId}, payment_id: ${paymentId}, purchase_id: ${purchaseId}`
+  return await client.signAndBroadcast(signerAddress, [msg], fee, memo)
 }

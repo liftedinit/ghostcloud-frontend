@@ -15,9 +15,9 @@ import {
   Text,
   Textarea,
 } from "@chakra-ui/react"
-import { useCreateDeployment } from "../lib/ghostcloud"
 import FileUpload from "./file-upload"
 import { useDisplayError } from "../helpers/errors"
+import { useCreateDeployment } from "../hooks/ghostcloud"
 
 export interface DeploymentData {
   name: string
