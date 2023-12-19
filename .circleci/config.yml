@@ -49,6 +49,7 @@ workflows:
   ci:
     jobs:
       - build_test:
+          context: GC_FE_TEST
           node_version: *node_version
       - security:
           node_version: *node_version
