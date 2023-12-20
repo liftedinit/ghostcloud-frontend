@@ -11,6 +11,11 @@ jest.mock("../../hooks/useAuthHandlers", () =>
     handleLogout: jest.fn(),
   }),
 )
+jest.mock("../../hooks/usePaymentHandler", () =>
+  jest.fn().mockReturnValue({
+    handlePayment: jest.fn(),
+  }),
+)
 
 describe("Menu", () => {
   it("renders Login button when provider is not available", () => {

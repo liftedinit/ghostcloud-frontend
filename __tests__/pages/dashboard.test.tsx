@@ -4,6 +4,13 @@ import { render, screen } from "@testing-library/react"
 import Dashboard from "../../pages/dashboard"
 import useWeb3AuthStore from "../../store/web3-auth"
 
+jest.mock("../../hooks/useAuthHandlers", () => {
+  return jest.fn().mockReturnValue({
+    handleLogin: jest.fn(),
+    handleLogout: jest.fn(),
+  })
+})
+
 jest.mock("../../store/web3-auth", () => jest.fn())
 describe("Dashboard", () => {
   it("renders login message if not connected", () => {
