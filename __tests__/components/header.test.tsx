@@ -9,6 +9,12 @@ jest.mock("../../hooks/useAuthHandlers", () => {
   })
 })
 
+jest.mock("../../hooks/payment/usePaymentHandler", () =>
+  jest.fn().mockReturnValue({
+    handlePayment: jest.fn(),
+  }),
+)
+
 describe("Header", () => {
   it("renders correct components", () => {
     render(<Header />)

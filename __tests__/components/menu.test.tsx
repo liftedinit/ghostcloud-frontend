@@ -11,7 +11,7 @@ jest.mock("../../hooks/useAuthHandlers", () =>
     handleLogout: jest.fn(),
   }),
 )
-jest.mock("../../hooks/usePaymentHandler", () =>
+jest.mock("../../hooks/payment/usePaymentHandler", () =>
   jest.fn().mockReturnValue({
     handlePayment: jest.fn(),
   }),

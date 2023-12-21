@@ -11,7 +11,7 @@ import { TfiMenu } from "react-icons/tfi"
 import Link from "next/link"
 import useAuthHandlers from "../hooks/useAuthHandlers"
 import React from "react"
-import usePaymentHandler from "../hooks/usePaymentHandler"
+import usePaymentHandler from "../hooks/payment/usePaymentHandler"
 
 type LoginProps = {}
 
