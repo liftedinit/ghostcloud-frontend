@@ -1,3 +1,4 @@
+import React from "react"
 import {
   cosmos,
   cosmosAminoConverters,
@@ -264,8 +265,25 @@ export const useRemoveDeployment = () => {
   })
 }
 
+const pageLimit = 10
+
 // Query the Ghostcloud RPC endpoint for deployments created by the current user
-export const useFetchMetas = (): UseQueryResult<QueryMetasResponse, Error> => {
+export const useFetchMetas = (): [
+  UseQueryResult<QueryMetasResponse | undefined, unknown>,
+  number,
+  number,
+  (direction: string) => void,
+] => {
+  const [key, setKey] = React.useState<Uint8Array | undefined>(undefined)
+  const [total, setTotal] = React.useState<number>(0)
+  const [pageCount, setPageCount] = React.useState<number>(0)
+  const [nextKey, setNextKey] = React.useState<Uint8Array | undefined>(
+    undefined,
+  )
+  const [prevKey, setPrevKey] = React.useState<Uint8Array | undefined>(
+    undefined,
+  )
+  const [currentPage, setCurrentPage] = React.useState(1)
   const store = useWeb3AuthStore()
   const displayError = useDisplayError()
 
@@ -282,20 +300,62 @@ export const useFetchMetas = (): UseQueryResult<QueryMetasResponse, Error> => {
         operator: ghostcloud.ghostcloud.Filter_Operator.EQUAL,
         value: address,
       })
+      const pagination = cosmos.base.query.v1beta1.PageRequest.fromPartial({
+        limit: BigInt(pageLimit),
+        countTotal: true,
+        key,
+      })
       const request = ghostcloud.ghostcloud.QueryMetasRequest.fromPartial({
         filters: [filter],
+        pagination,
       })
-      return await client.ghostcloud.ghostcloud.metas(request)
+      const res = await client.ghostcloud.ghostcloud.metas(request)
+
+      if (res.pagination?.total ?? 0 > 0) {
+        setTotal(Number(res.pagination?.total))
+      }
+
+      if (res.pagination?.nextKey) {
+        const convertedNextKey: Uint8Array = res.pagination.nextKey
+        const nextKeyNumber = parseInt(res.pagination?.nextKey.join(""), 10)
+        const previousKeyNumber = nextKeyNumber - 2
+        const previousKey = new Uint8Array(
+          previousKeyNumber.toString().split("").map(Number),
+        )
+        setNextKey(convertedNextKey)
+        setPrevKey(previousKey)
+      }
+      return res
     }
   }
 
-  return useQuery({
+  const query = useQuery({
     queryKey: "metas",
     queryFn: list,
     onError: error => {
-      displayError("Failed to fetch deployments", error)
+      displayError("Failed to fetch deployments", error as Error)
     },
   })
+  const { refetch } = query
+  React.useEffect(() => {
+    refetch()
+  }, [key, refetch])
+
+  React.useEffect(() => {
+    setPageCount(Math.ceil(total / pageLimit))
+  }, [total])
+
+  const handlePageClick = (direction: string) => {
+    if (direction === "next") {
+      setKey(nextKey)
+      setCurrentPage(currentPage + 1)
+    } else {
+      setKey(prevKey)
+      setCurrentPage(currentPage - 1)
+    }
+  }
+
+  return [query, currentPage, pageCount, handlePageClick]
 }
 
 export const useFetchBalance = (): UseQueryResult<Coin, Error> => {

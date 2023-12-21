@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Center,
   Table,
   Thead,
   Tbody,
@@ -12,7 +13,12 @@ import {
   Spinner,
   HStack,
 } from "@chakra-ui/react"
-import { DeleteIcon, EditIcon } from "@chakra-ui/icons"
+import {
+  ArrowBackIcon,
+  ArrowForwardIcon,
+  DeleteIcon,
+  EditIcon,
+} from "@chakra-ui/icons"
 import { useFetchMetas } from "../lib/ghostcloud"
 import { useEffect, useState } from "react"
 import CreateDeploymentModal from "./create-deployment"
@@ -40,7 +46,12 @@ const Dashboard = () => {
   const [selectedDeploymentDomain, setSelectedDeploymentDomain] =
     useState<string>("")
   const [address, setAddress] = useState<string>("")
-  const { data: metas, isLoading: isMetaLoading } = useFetchMetas()
+  const [
+    { data: metas, isLoading: isMetaLoading },
+    currentPage,
+    pageCount,
+    handlePageClick,
+  ] = useFetchMetas()
   const store = useWeb3AuthStore()
 
   useEffect(() => {
@@ -141,6 +152,28 @@ const Dashboard = () => {
               ))}
             </Tbody>
           </Table>
+
+          {pageCount > 1 && (
+            <Center my={8}>
+              <IconButton
+                icon={<ArrowBackIcon />}
+                aria-label="Previous"
+                isDisabled={currentPage === 1}
+                onClick={() => handlePageClick("prev")}
+                data-testid="previous-button"
+              />
+              <Box mx={4} data-testid="page-info">
+                {currentPage} / {pageCount}
+              </Box>
+              <IconButton
+                icon={<ArrowForwardIcon />}
+                aria-label="Next"
+                isDisabled={currentPage === pageCount}
+                onClick={() => handlePageClick("next")}
+                data-testid="next-button"
+              />
+            </Center>
+          )}
         </>
       ) : (
         <div>Error fetching deployments. Is the backend online?</div>
