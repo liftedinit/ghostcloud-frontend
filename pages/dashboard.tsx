@@ -1,21 +1,20 @@
 import useWeb3AuthStore from "../store/web3-auth"
 import DashboardComponent from "../components/dashboard"
 import { Box, Container, Grid, GridItem } from "@chakra-ui/react"
-import { useEffect, useMemo } from "react"
-import useAuthHandlers from "../hooks/useAuthHandlers"
+import { useEffect } from "react"
+import { useHandleLogin } from "../hooks/auth/handle-login"
 
 export default function Dashboard() {
   const store = useWeb3AuthStore()
   const isConnected = store.isConnected()
-  const { handleLogin } = useAuthHandlers()
-  const memoizedLogin = useMemo(() => handleLogin, [])
+  const { mutate: handleLogin } = useHandleLogin()
 
   // TODO: Better way to handle this to re-connect to the session
   useEffect(() => {
     if (!isConnected) {
-      memoizedLogin()
+      handleLogin()
     }
-  }, [memoizedLogin])
+  }, [handleLogin, isConnected])
 
   return isConnected ? (
     <Container maxW="6xl" minH={"80vh"}>

@@ -1,9 +1,9 @@
-import { useCheckApiStatus } from "./useCheckApiStatus"
-import { useCreateInvoice } from "./useCreateInvoice"
+import { useCheckApiStatus } from "./check-api-status"
+import { useCreateInvoice } from "./create-invoice"
 import { useDisplayError } from "../../helpers/errors"
 
 // Handle the payment process
-export default function usePaymentHandler() {
+export default function useHandlePayment() {
   const { isSuccess: apiStatusOk } = useCheckApiStatus()
   const { mutate: createInvoice } = useCreateInvoice()
   const displayError = useDisplayError()
