@@ -4,19 +4,6 @@ import { useQuery } from "react-query"
 import Dashboard from "../../components/dashboard"
 import useWeb3AuthStore from "../../store/web3-auth"
 
-jest.mock("react-query", () => ({
-  useQuery: jest.fn(),
-  useQueryClient: jest.fn(),
-  useMutation: jest.fn(),
-}))
-jest.mock("../../store/web3-auth", () => jest.fn())
-jest.mock("../../hooks/useAuthHandlers", () => {
-  return jest.fn().mockReturnValue({
-    handleLogin: jest.fn(),
-    handleLogout: jest.fn(),
-  })
-})
-
 describe("Dashboard", () => {
   beforeEach(() => {
     useWeb3AuthStore.mockReturnValue({

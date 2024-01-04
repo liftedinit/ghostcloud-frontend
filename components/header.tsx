@@ -18,6 +18,8 @@ import Menu from "./menu"
 import AddressDisplay from "./address-display"
 import useWeb3AuthStore from "../store/web3-auth"
 import BalanceDisplay from "./balance-display"
+import { useEffect } from "react"
+import { useHandleLogin } from "../hooks/auth/handle-login"
 
 function Header() {
   const { colorMode, toggleColorMode } = useColorMode()
@@ -26,8 +28,7 @@ function Header() {
     "modes.dark.background",
   )
   const logo = useColorModeValue(logoLight, logoDark)
-  const store = useWeb3AuthStore()
-  const isConnected = store.isConnected()
+  const { isConnected } = useWeb3AuthStore()
 
   return (
     <header>
@@ -46,7 +47,7 @@ function Header() {
               justifyContent={"flex-start"}
               py={2}
             >
-              {isConnected ? (
+              {isConnected() ? (
                 <VStack alignItems={"start"}>
                   <AddressDisplay />
                   <BalanceDisplay />

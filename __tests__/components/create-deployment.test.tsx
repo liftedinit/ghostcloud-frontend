@@ -2,12 +2,6 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react"
 import CreateDeploymentModal from "../../components/create-deployment"
 
-jest.mock("react-query", () => ({
-  useQuery: jest.fn(),
-  useQueryClient: jest.fn(),
-  useMutation: jest.fn(),
-}))
-
 describe("CreateDeploymentModal", () => {
   it("renders form elements", async () => {
     render(<CreateDeploymentModal isOpen={true} onClose={jest.fn()} />)

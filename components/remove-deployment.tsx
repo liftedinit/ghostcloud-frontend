@@ -13,8 +13,8 @@ import {
 } from "@chakra-ui/react"
 import { Formik, Form, Field, ErrorMessage, FormikHelpers } from "formik"
 import * as Yup from "yup"
-import { useRemoveDeployment } from "../lib/ghostcloud"
-import { useDisplayError } from "../helpers/errors"
+import { useRemoveDeployment } from "../hooks/ghostcloud"
+import { useDisplayError } from "../helpers/toast"
 
 const RemoveDeploymentModal = ({
   isOpen,

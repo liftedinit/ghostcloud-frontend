@@ -18,7 +18,7 @@ import heroDark from "../public/hero-dark.png"
 import heroLight from "../public/hero-light.png"
 import React from "react"
 import { Feature } from "../components"
-import useAuthHandlers from "../hooks/useAuthHandlers"
+import { useHandleLogin } from "../hooks/auth/handle-login"
 
 export default function Home() {
   const bgColor = useColorModeValue(
@@ -31,7 +31,7 @@ export default function Home() {
   )
   const logo = useColorModeValue(logoLight, logoDark)
   const hero = useColorModeValue(heroLight, heroDark)
-  const { handleLogin } = useAuthHandlers()
+  const { mutate: handleLogin } = useHandleLogin()
 
   return (
     <>
@@ -66,7 +66,7 @@ export default function Home() {
                 era of web technology effortlessly.
               </Text>
               <Stack spacing={6} direction="row">
-                <Button onClick={handleLogin}>Get started</Button>
+                <Button onClick={() => handleLogin()}>Get started</Button>
               </Stack>
             </Stack>
           </Box>

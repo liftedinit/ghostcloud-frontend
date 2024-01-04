@@ -13,7 +13,6 @@ import {
   HStack,
 } from "@chakra-ui/react"
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons"
-import { useFetchMetas } from "../lib/ghostcloud"
 import { useEffect, useState } from "react"
 import CreateDeploymentModal from "./create-deployment"
 import UpdateDeploymentModal from "./update-deployment"
@@ -24,6 +23,7 @@ import {
 } from "../config/ghostcloud-chain"
 import useWeb3AuthStore from "../store/web3-auth"
 import { truncateAddress } from "../helpers/address"
+import { useListDeployments } from "../hooks/ghostcloud"
 
 function createUrl(name: string, address: string) {
   return `${GHOSTCLOUD_URL_SCHEME}://${name}-${address}.${GHOSTCLOUD_URL_DOMAIN}`
@@ -40,7 +40,7 @@ const Dashboard = () => {
   const [selectedDeploymentDomain, setSelectedDeploymentDomain] =
     useState<string>("")
   const [address, setAddress] = useState<string>("")
-  const { data: metas, isLoading: isMetaLoading } = useFetchMetas()
+  const { data: metas, isLoading: isMetaLoading } = useListDeployments()
   const store = useWeb3AuthStore()
 
   useEffect(() => {
