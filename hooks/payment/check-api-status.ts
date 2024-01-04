@@ -1,4 +1,4 @@
-import { useDisplayError } from "../../helpers/errors"
+import { useDisplayError } from "../../helpers/toast"
 import { API_STATUS_ENDPOINT } from "../../config/nowpayment"
 import { useQuery } from "react-query"
 

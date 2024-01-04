@@ -35,6 +35,7 @@ import {
   createSendMsg,
   createUpdateDeploymentMsg,
 } from "./message_composer"
+import _ from "lodash"
 
 async function createSigner(pk: Uint8Array) {
   const getSignerFromKey = async (): Promise<OfflineDirectSigner> => {
@@ -195,8 +196,43 @@ export async function fetchTransferEvents(sender: string, recipient: string) {
       `transfer.recipient='${recipient}'`,
     ],
   })
-  const response = await client.cosmos.tx.v1beta1.getTxsEvent(query)
-  return response.txs
+  return await client.cosmos.tx.v1beta1.getTxsEvent(query)
+}
+
+export async function isTokenTransferSuccessful(
+  sender: string,
+  recipient: string,
+  invoiceId: number,
+  paymentId: number,
+  purchaseId: number,
+) {
+  const data = await fetchTransferEvents(sender, recipient)
+  // TODO: We should probably have an internal tracking system instead of relying on NOWPayment to provide the IDs.
+  const regex = /invoice_id: (\d+), payment_id: (\d+), purchase_id: (\d+)/
+
+  // Try to find the payment in the blockchain
+  for (const [tx, txResponse] of _.zip(data.txs, data.txResponses)) {
+    const memo = tx?.body?.memo
+    if (!memo) {
+      continue
+    }
+    const matches = RegExp(regex).exec(memo)
+    if (!matches) {
+      continue
+    }
+
+    if (
+      Number(matches[1]) === invoiceId &&
+      Number(matches[2]) === paymentId &&
+      Number(matches[3]) === purchaseId
+    ) {
+      console.log("Found payment in blockchain!!!")
+      return { tx, txResponse }
+    }
+  }
+
+  console.log("Payment not found in blockchain")
+  return undefined
 }
 
 // TODO: Refactor this function to not use mnemonic
@@ -204,9 +240,9 @@ export async function sendTokens(
   to: string,
   mnemonic: string,
   amount: number,
-  invoiceId: string,
-  paymentId: string,
-  purchaseId: string,
+  invoiceId: number,
+  paymentId: number,
+  purchaseId: number,
 ) {
   const signer = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
     prefix: GHOSTCLOUD_ADDRESS_PREFIX,

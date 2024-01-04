@@ -1,6 +1,6 @@
 import { useCheckApiStatus } from "./check-api-status"
 import { useCreateInvoice } from "./create-invoice"
-import { useDisplayError } from "../../helpers/errors"
+import { useDisplayError } from "../../helpers/toast"
 
 // Handle the payment process
 export default function useHandlePayment() {

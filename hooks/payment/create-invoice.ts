@@ -1,5 +1,5 @@
 import useWeb3AuthStore from "../../store/web3-auth"
-import { useDisplayError } from "../../helpers/errors"
+import { useDisplayError } from "../../helpers/toast"
 import {
   API_CREATE_INVOICE_ENDPOINT,
   API_KEY,

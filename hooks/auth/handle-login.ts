@@ -7,7 +7,7 @@ import {
 import useWeb3AuthStore from "../../store/web3-auth"
 import { useRouter } from "next/router"
 import { useMutation } from "react-query"
-import { useDisplayError } from "../../helpers/errors"
+import { useDisplayError } from "../../helpers/toast"
 
 export const useHandleLogin = () => {
   const { colorMode } = useColorMode() // To pass the color mode to Web3Auth
@@ -23,7 +23,9 @@ export const useHandleLogin = () => {
       }
       await web3AuthInitProvider(GHOSTCLOUD_CHAIN_CONFIG, uiConfig)
     }
-    await router.push("/dashboard")
+    const newPath =
+      router.pathname === "/dashboard" ? router.asPath : "/dashboard"
+    await router.push(newPath)
   }
 
   return useMutation(login, {

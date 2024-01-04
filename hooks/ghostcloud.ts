@@ -16,7 +16,7 @@ import {
   updateDeployment,
 } from "../lib/ghostcloud"
 import { QueryMetasResponse } from "@liftedinit/gcjs/dist/codegen/ghostcloud/ghostcloud/query"
-import { useDisplayError } from "../helpers/errors"
+import { useDisplayError } from "../helpers/toast"
 import { Coin } from "@cosmjs/stargate"
 
 export const useCreateDeployment = () => {

@@ -3,10 +3,12 @@ import logger from "../../lib/logger"
 import type { NextApiRequest, NextApiResponse } from "next"
 import {
   fetchBalance,
-  fetchTransferEvents,
+  isTokenTransferSuccessful,
   sendTokens,
 } from "../../lib/ghostcloud"
 import { IncomingHttpHeaders } from "node:http"
+import { PaymentStatus } from "../../types/payment/types"
+import { getBankAccountAddress } from "../../config/ghostcloud-chain"
 
 const INVALID_BODY = "Invalid request body"
 const INVALID_HEADER = "Invalid request header"
@@ -26,18 +28,6 @@ const INVOICE_ID_KEY = "invoice_id"
 const PAYMENT_ID_KEY = "payment_id"
 const PURCHASE_ID_KEY = "purchase_id"
 const ORDER_DESCRIPTION_KEY = "order_description"
-
-enum PaymentStatus {
-  waiting = "waiting",
-  confirming = "confirming",
-  confirmed = "confirmed",
-  sending = "sending",
-  partially_paid = "partially_paid",
-  finished = "finished",
-  failed = "failed",
-  refunded = "refunded",
-  expired = "expired",
-}
 
 type ResponseData = {
   message: string
@@ -171,33 +161,20 @@ function sanitizePaymentStatus(
 
 async function verifyTokenTransferAlreadyProcessed(
   address: string,
-  invoiceId: string,
-  paymentId: string,
-  purchaseId: string,
+  invoiceId: number,
+  paymentId: number,
+  purchaseId: number,
 ) {
-  // Query the blockchain to check if the payment already exists
-  const txs = await fetchTransferEvents(getBankAccountAddress(), address)
-  // TODO: We should probably have an internal tracking system instead of relying on NOWPayment to provide the IDs.
-  const regex = /invoice_id: (\d+), payment_id: (\d+), purchase_id: (\d+)/
-
-  // Try to find the payment in the blockchain
-  for (const tx of txs) {
-    const memo = tx.body?.memo
-    if (!memo) {
-      continue
-    }
-    const matches = RegExp(regex).exec(memo)
-    if (!matches) {
-      continue
-    }
-
-    if (
-      matches[1] === invoiceId &&
-      matches[2] === paymentId &&
-      matches[3] === purchaseId
-    ) {
-      throw new Error("Payment already exists")
-    }
+  if (
+    await isTokenTransferSuccessful(
+      getBankAccountAddress(),
+      address,
+      invoiceId,
+      paymentId,
+      purchaseId,
+    )
+  ) {
+    throw new Error("Payment already exists")
   }
 }
 
@@ -213,9 +190,9 @@ function getBankAccountKey() {
 async function performTokenTransfer(
   address: string,
   amount: number,
-  invoiceId: string,
-  paymentId: string,
-  purchaseId: string,
+  invoiceId: number,
+  paymentId: number,
+  purchaseId: number,
 ) {
   logger.debug("Sending tokens")
   logger.debug(`Address: ${address}`)
@@ -236,14 +213,6 @@ async function performTokenTransfer(
   )
   logger.debug("Tokens sent")
   return res
-}
-
-function getBankAccountAddress() {
-  const address = process.env.BANK_ACCOUNT_ADDRESS
-  if (!address) {
-    throw new Error("Bank account address is not set")
-  }
-  return address
 }
 
 function getTransferAmount() {
@@ -285,70 +254,48 @@ async function checkBankAccountBalance() {
 // Throws an error if the payment status is invalid.
 async function processPayment(
   status: PaymentStatus,
-  invoiceId: string,
-  paymentId: string,
-  purchaseId: string,
+  invoiceId: number,
+  paymentId: number,
+  purchaseId: number,
   orderDescription: string,
 ) {
   logger.info(`Processing payment status: ${status}`)
-  switch (status) {
-    case PaymentStatus.waiting:
-      break
-    case PaymentStatus.confirming:
-      break
-    case PaymentStatus.confirmed:
-      break
-    case PaymentStatus.sending:
-      break
-    case PaymentStatus.partially_paid:
-      break
-    case PaymentStatus.finished: {
-      const match = RegExp(/^Token purchase for (.+)$/).exec(orderDescription)
-      if (!match) {
-        throw new Error(INVALID_ORDER_DESCRIPTION_FORMAT)
-      }
-      logger.debug("Order description is valid")
-      logger.debug("Verifying payment on chain")
-      await verifyTokenTransferAlreadyProcessed(
-        match[1],
-        invoiceId,
-        paymentId,
-        purchaseId,
-      )
-      logger.debug("Token transfer not processed yet")
-      logger.debug("Checking bank account balance")
-      await checkBankAccountBalance()
-      logger.debug("Bank account has sufficient funds")
 
-      logger.debug("Transferring tokens to user wallet")
-      const response = await performTokenTransfer(
-        match[1],
-        getTransferAmount(),
-        invoiceId,
-        paymentId,
-        purchaseId,
-      )
-      if (!response) {
-        throw new Error("Could not transfer tokens")
-      }
-      logger.debug("Tokens transferred")
-      logger.debug("Token transfer height: ", response.height)
-      logger.debug(
-        "Token transfer transaction hash: ",
-        response.transactionHash,
-      )
-
-      // TODO: We should probably check that the transfer was successful before marking the payment as finished.
-      // TODO: We should report the transaction hash to the user.
-
-      break
+  // We only implement the case where the payment has finished.
+  if (status === PaymentStatus.finished) {
+    const match = RegExp(/^Token purchase for (.+)$/).exec(orderDescription)
+    if (!match) {
+      throw new Error(INVALID_ORDER_DESCRIPTION_FORMAT)
     }
-    case PaymentStatus.failed:
-      break
-    case PaymentStatus.refunded:
-      break
-    case PaymentStatus.expired:
-      break
+    logger.debug("Order description is valid")
+    logger.debug("Verifying payment on chain")
+    await verifyTokenTransferAlreadyProcessed(
+      match[1],
+      invoiceId,
+      paymentId,
+      purchaseId,
+    )
+    logger.debug("Token transfer not processed yet")
+    logger.debug("Checking bank account balance")
+    await checkBankAccountBalance()
+    logger.debug("Bank account has sufficient funds")
+
+    logger.debug("Transferring tokens to user wallet")
+    const response = await performTokenTransfer(
+      match[1],
+      getTransferAmount(),
+      invoiceId,
+      paymentId,
+      purchaseId,
+    )
+    if (!response) {
+      throw new Error("Could not transfer tokens")
+    }
+    logger.debug("Tokens transferred")
+    logger.debug(`Token transfer height: ${response.height}`)
+    logger.debug(`Token transfer transaction hash: ${response.transactionHash}`)
+  } else {
+    logger.debug(`Payment status handling for ${status} is unimplemented`)
   }
 }
 

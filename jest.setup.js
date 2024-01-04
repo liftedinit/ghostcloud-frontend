@@ -1,5 +1,10 @@
 // Learn more: https://github.com/testing-library/jest-dom
 import "@testing-library/jest-dom"
+import { useGetPaymentStatus } from "./hooks/payment/get-payment-status"
+
+process.env.NEXT_PUBLIC_GHOSTCLOUD_BANK_ACCOUNT_ADDRESS = "mock_address"
+
+jest.mock("next/router", () => require("next-router-mock"))
 
 jest.mock("./store/web3-auth", () => ({
   __esModule: true, // this property makes it work as a module
@@ -19,6 +24,12 @@ jest.mock("react-query", () => ({
   useQuery: jest.fn(),
   useQueryClient: jest.fn(),
   useMutation: jest.fn(),
+}))
+
+jest.mock("./hooks/payment/get-payment-status", () => ({
+  useGetPaymentStatus: () => ({
+    data: null,
+  }),
 }))
 
 jest.mock("./hooks/payment/handle-payment", () =>

@@ -34,6 +34,15 @@ export const GHOSTCLOUD_MODAL_PRIMARY_COLOR = "gray"
 export const GHOSTCLOUD_GAS_PRICE = GasPrice.fromString(
   GHOSTCLOUD_GAS_PRICE_AMOUNT.concat(GHOSTCLOUD_GAS_PRICE_DENOM),
 )
+export const GHOSTCLOUD_BANK_ACCOUNT_ADDRESS = getBankAccountAddress()
+
+export function getBankAccountAddress() {
+  const address = process.env.NEXT_PUBLIC_GHOSTCLOUD_BANK_ACCOUNT_ADDRESS
+  if (!address) {
+    throw new Error("Bank account address is not set")
+  }
+  return address
+}
 
 export const GHOSTCLOUD_CHAIN_CONFIG = {
   chainNamespace: GHOSTCLOUD_CHAIN_NAMESPACE,

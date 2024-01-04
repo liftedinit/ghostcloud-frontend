@@ -18,3 +18,17 @@ export const PAYMENT_SUCCESS_URL =
   "http://localhost:3000/success"
 export const API_STATUS_ENDPOINT = `https://${API_SUBDOMAIN}.nowpayments.io/v1/status`
 export const API_CREATE_INVOICE_ENDPOINT = `https://${API_SUBDOMAIN}.nowpayments.io/v1/invoice`
+
+const API_PAYMENT_STATUS_ENDPOINT = `https://${API_SUBDOMAIN}.nowpayments.io/v1/payment`
+export const getPaymentStatus = async (id: string) => {
+  const myHeaders = new Headers()
+  myHeaders.append("x-api-key", API_KEY)
+
+  const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow" as RequestRedirect,
+  }
+
+  return await fetch(`${API_PAYMENT_STATUS_ENDPOINT}/${id}`, requestOptions)
+}
