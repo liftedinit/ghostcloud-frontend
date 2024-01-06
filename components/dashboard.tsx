@@ -1,3 +1,4 @@
+import React from "react"
 import {
   Box,
   Button,
@@ -47,7 +48,7 @@ const Dashboard = () => {
     useState<string>("")
   const [address, setAddress] = useState<string>("")
   const [
-    { data: metas, isLoading: isMetaLoading },
+    { data: metas, isLoading: isMetaLoading, refetch: refetchMetas },
     currentPage,
     pageCount,
     handlePageClick,
@@ -71,6 +72,11 @@ const Dashboard = () => {
   const handleRemove = (name: string) => {
     setSelectedDeploymentName(name)
     setIsRemoveModalOpen(true)
+
+    // If on last page and only one item, return to previous page
+    if (currentPage === pageCount && metas?.meta.length === 1) {
+      handlePageClick("prev")
+    }
   }
 
   return (
@@ -87,7 +93,10 @@ const Dashboard = () => {
           </Button>
           <CreateDeploymentModal
             isOpen={isCreateModalOpen}
-            onClose={() => setIsCreateModalOpen(false)}
+            onClose={() => {
+              refetchMetas()
+              setIsCreateModalOpen(false)
+            }}
           />
           <UpdateDeploymentModal
             isOpen={isUpdateModalOpen}
@@ -98,7 +107,10 @@ const Dashboard = () => {
           />
           <RemoveDeploymentModal
             isOpen={isRemoveModalOpen}
-            onClose={() => setIsRemoveModalOpen(false)}
+            onClose={() => {
+              refetchMetas()
+              setIsRemoveModalOpen(false)
+            }}
             deploymentName={selectedDeploymentName}
           />
           <Table variant="simple">

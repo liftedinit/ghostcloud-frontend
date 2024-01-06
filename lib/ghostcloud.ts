@@ -274,16 +274,8 @@ export const useFetchMetas = (): [
   number,
   (direction: string) => void,
 ] => {
-  const [key, setKey] = React.useState<Uint8Array | undefined>(undefined)
-  const [total, setTotal] = React.useState<number>(0)
   const [pageCount, setPageCount] = React.useState<number>(0)
-  const [nextKey, setNextKey] = React.useState<Uint8Array | undefined>(
-    undefined,
-  )
-  const [prevKey, setPrevKey] = React.useState<Uint8Array | undefined>(
-    undefined,
-  )
-  const [currentPage, setCurrentPage] = React.useState(1)
+  const [page, setPage] = React.useState(0)
   const store = useWeb3AuthStore()
   const displayError = useDisplayError()
 
@@ -303,7 +295,7 @@ export const useFetchMetas = (): [
       const pagination = cosmos.base.query.v1beta1.PageRequest.fromPartial({
         limit: BigInt(pageLimit),
         countTotal: true,
-        key,
+        offset: BigInt(pageLimit * page),
       })
       const request = ghostcloud.ghostcloud.QueryMetasRequest.fromPartial({
         filters: [filter],
@@ -312,50 +304,31 @@ export const useFetchMetas = (): [
       const res = await client.ghostcloud.ghostcloud.metas(request)
 
       if (res.pagination?.total ?? 0 > 0) {
-        setTotal(Number(res.pagination?.total))
+        setPageCount(Math.ceil(Number(res.pagination?.total) / pageLimit))
       }
 
-      if (res.pagination?.nextKey) {
-        const convertedNextKey: Uint8Array = res.pagination.nextKey
-        const nextKeyNumber = parseInt(res.pagination?.nextKey.join(""), 10)
-        const previousKeyNumber = nextKeyNumber - 2
-        const previousKey = new Uint8Array(
-          previousKeyNumber.toString().split("").map(Number),
-        )
-        setNextKey(convertedNextKey)
-        setPrevKey(previousKey)
-      }
       return res
     }
   }
 
   const query = useQuery({
-    queryKey: "metas",
+    queryKey: ["metas", page],
     queryFn: list,
     onError: error => {
       displayError("Failed to fetch deployments", error as Error)
     },
+    keepPreviousData: true,
   })
-  const { refetch } = query
-  React.useEffect(() => {
-    refetch()
-  }, [key, refetch])
-
-  React.useEffect(() => {
-    setPageCount(Math.ceil(total / pageLimit))
-  }, [total])
 
   const handlePageClick = (direction: string) => {
-    if (direction === "next") {
-      setKey(nextKey)
-      setCurrentPage(currentPage + 1)
-    } else {
-      setKey(prevKey)
-      setCurrentPage(currentPage - 1)
-    }
+    setPage(old =>
+      direction === "next"
+        ? Math.min(old + 1, pageCount - 1)
+        : Math.max(old - 1, 0),
+    )
   }
 
-  return [query, currentPage, pageCount, handlePageClick]
+  return [query, page + 1, pageCount, handlePageClick]
 }
 
 export const useFetchBalance = (): UseQueryResult<Coin, Error> => {
