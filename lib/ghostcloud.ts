@@ -1,3 +1,4 @@
+import React from "react"
 import {
   cosmos,
   cosmosAminoConverters,
@@ -264,8 +265,17 @@ export const useRemoveDeployment = () => {
   })
 }
 
+const pageLimit = 10
+
 // Query the Ghostcloud RPC endpoint for deployments created by the current user
-export const useFetchMetas = (): UseQueryResult<QueryMetasResponse, Error> => {
+export const useFetchMetas = (): [
+  UseQueryResult<QueryMetasResponse | undefined, unknown>,
+  number,
+  number,
+  (direction: string) => void,
+] => {
+  const [pageCount, setPageCount] = React.useState<number>(0)
+  const [page, setPage] = React.useState(0)
   const store = useWeb3AuthStore()
   const displayError = useDisplayError()
 
@@ -282,20 +292,43 @@ export const useFetchMetas = (): UseQueryResult<QueryMetasResponse, Error> => {
         operator: ghostcloud.ghostcloud.Filter_Operator.EQUAL,
         value: address,
       })
+      const pagination = cosmos.base.query.v1beta1.PageRequest.fromPartial({
+        limit: BigInt(pageLimit),
+        countTotal: true,
+        offset: BigInt(pageLimit * page),
+      })
       const request = ghostcloud.ghostcloud.QueryMetasRequest.fromPartial({
         filters: [filter],
+        pagination,
       })
-      return await client.ghostcloud.ghostcloud.metas(request)
+      const res = await client.ghostcloud.ghostcloud.metas(request)
+
+      if (res.pagination?.total ?? 0 > 0) {
+        setPageCount(Math.ceil(Number(res.pagination?.total) / pageLimit))
+      }
+
+      return res
     }
   }
 
-  return useQuery({
-    queryKey: "metas",
+  const query = useQuery({
+    queryKey: ["metas", page],
     queryFn: list,
     onError: error => {
-      displayError("Failed to fetch deployments", error)
+      displayError("Failed to fetch deployments", error as Error)
     },
+    keepPreviousData: true,
   })
+
+  const handlePageClick = (direction: string) => {
+    setPage(old =>
+      direction === "next"
+        ? Math.min(old + 1, pageCount - 1)
+        : Math.max(old - 1, 0),
+    )
+  }
+
+  return [query, page + 1, pageCount, handlePageClick]
 }
 
 export const useFetchBalance = (): UseQueryResult<Coin, Error> => {

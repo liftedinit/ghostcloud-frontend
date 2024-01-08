@@ -1,6 +1,8 @@
+import React from "react"
 import {
   Box,
   Button,
+  Center,
   Table,
   Thead,
   Tbody,
@@ -12,7 +14,12 @@ import {
   Spinner,
   HStack,
 } from "@chakra-ui/react"
-import { DeleteIcon, EditIcon } from "@chakra-ui/icons"
+import {
+  ArrowBackIcon,
+  ArrowForwardIcon,
+  DeleteIcon,
+  EditIcon,
+} from "@chakra-ui/icons"
 import { useFetchMetas } from "../lib/ghostcloud"
 import { useEffect, useState } from "react"
 import CreateDeploymentModal from "./create-deployment"
@@ -40,7 +47,12 @@ const Dashboard = () => {
   const [selectedDeploymentDomain, setSelectedDeploymentDomain] =
     useState<string>("")
   const [address, setAddress] = useState<string>("")
-  const { data: metas, isLoading: isMetaLoading } = useFetchMetas()
+  const [
+    { data: metas, isLoading: isMetaLoading, refetch: refetchMetas },
+    currentPage,
+    pageCount,
+    handlePageClick,
+  ] = useFetchMetas()
   const store = useWeb3AuthStore()
 
   useEffect(() => {
@@ -60,6 +72,11 @@ const Dashboard = () => {
   const handleRemove = (name: string) => {
     setSelectedDeploymentName(name)
     setIsRemoveModalOpen(true)
+
+    // If on last page and only one item, return to previous page
+    if (currentPage === pageCount && metas?.meta.length === 1) {
+      handlePageClick("prev")
+    }
   }
 
   return (
@@ -76,7 +93,10 @@ const Dashboard = () => {
           </Button>
           <CreateDeploymentModal
             isOpen={isCreateModalOpen}
-            onClose={() => setIsCreateModalOpen(false)}
+            onClose={() => {
+              refetchMetas()
+              setIsCreateModalOpen(false)
+            }}
           />
           <UpdateDeploymentModal
             isOpen={isUpdateModalOpen}
@@ -87,7 +107,10 @@ const Dashboard = () => {
           />
           <RemoveDeploymentModal
             isOpen={isRemoveModalOpen}
-            onClose={() => setIsRemoveModalOpen(false)}
+            onClose={() => {
+              refetchMetas()
+              setIsRemoveModalOpen(false)
+            }}
             deploymentName={selectedDeploymentName}
           />
           <Table variant="simple">
@@ -141,6 +164,28 @@ const Dashboard = () => {
               ))}
             </Tbody>
           </Table>
+
+          {pageCount > 1 && (
+            <Center my={8}>
+              <IconButton
+                icon={<ArrowBackIcon />}
+                aria-label="Previous"
+                isDisabled={currentPage === 1}
+                onClick={() => handlePageClick("prev")}
+                data-testid="previous-button"
+              />
+              <Box mx={4} data-testid="page-info">
+                {currentPage} / {pageCount}
+              </Box>
+              <IconButton
+                icon={<ArrowForwardIcon />}
+                aria-label="Next"
+                isDisabled={currentPage === pageCount}
+                onClick={() => handlePageClick("next")}
+                data-testid="next-button"
+              />
+            </Center>
+          )}
         </>
       ) : (
         <div>Error fetching deployments. Is the backend online?</div>
