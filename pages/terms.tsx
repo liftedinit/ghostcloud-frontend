@@ -35,28 +35,26 @@ export function TermsOfService() {
         <Heading as="h2" size="md" mt={8} mb={2}>
           Intellectual Property
         </Heading>
-        <Text>
-          <p style={{ marginBottom: "20px" }}>
-            While the Service, encompassing text, graphics, images, logos,
-            trademarks, and software, remains the property of GhostCloud and its
-            licensors, protected by applicable intellectual property laws, any
-            content, data, or intellectual property you provide or create
-            (&quot;User Content&quot;) remains solely yours. You retain all
-            rights and intellectual property interests in your User Content, and
-            GhostCloud claims no ownership, right, title, or interest in any
-            User Content you create, upload, or share on or through the Service.
-          </p>
-          <p style={{ marginBottom: "20px" }}>
-            You grant GhostCloud a limited, non-exclusive, royalty-free license
-            to use, host, and display your User Content solely for the purpose
-            of providing, improving, and developing the Service, subject to
-            these Terms.
-          </p>
-          <p>
-            Prior written consent from us is required should you wish to use,
-            reproduce, modify, distribute, or display any portion of the
-            Service, excluding your User Content.
-          </p>
+        <Text mb={4}>
+          While the Service, encompassing text, graphics, images, logos,
+          trademarks, and software, remains the property of GhostCloud and its
+          licensors, protected by applicable intellectual property laws, any
+          content, data, or intellectual property you provide or create
+          (&quot;User Content&quot;) remains solely yours. You retain all rights
+          and intellectual property interests in your User Content, and
+          GhostCloud claims no ownership, right, title, or interest in any User
+          Content you create, upload, or share on or through the Service.
+        </Text>
+        <Text mb={4}>
+          You grant GhostCloud a limited, non-exclusive, royalty-free license to
+          use, host, and display your User Content solely for the purpose of
+          providing, improving, and developing the Service, subject to these
+          Terms.
+        </Text>
+        <Text mb={4}>
+          Prior written consent from us is required should you wish to use,
+          reproduce, modify, distribute, or display any portion of the Service,
+          excluding your User Content.
         </Text>
         <Heading as="h2" size="md" mt={8} mb={2}>
           Disclaimer of Warranties

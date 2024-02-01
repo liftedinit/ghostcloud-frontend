@@ -1,6 +1,8 @@
 import { Formik, Form, Field, ErrorMessage, FormikHelpers } from "formik"
 import * as Yup from "yup"
 import {
+  Flex,
+  Box,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -18,6 +20,7 @@ import {
 import { useCreateDeployment } from "../lib/ghostcloud"
 import FileUpload from "./file-upload"
 import { useDisplayError } from "../helpers/errors"
+import Info from "./info"
 
 export interface DeploymentData {
   name: string
@@ -50,6 +53,20 @@ const CreateDeploymentModal = ({
     } finally {
       actions.setSubmitting(false)
     }
+  }
+
+  function checkIfFilesAreCorrectType(files?: [File]): boolean {
+    let valid = true
+    if (files) {
+      files.map(file => {
+        if (
+          !["application/pdf", "image/jpeg", "image/png"].includes(file.type)
+        ) {
+          valid = false
+        }
+      })
+    }
+    return valid
   }
 
   return (
@@ -89,13 +106,23 @@ const CreateDeploymentModal = ({
             <Form>
               <ModalBody>
                 <FormControl isRequired>
-                  <FormLabel>Name</FormLabel>
+                  <Flex align="center">
+                    <FormLabel>Name</FormLabel>
+                    <Box ml="auto">
+                      <Info id="name" />
+                    </Box>
+                  </Flex>
                   <Field as={Input} isReadOnly name="name" type="text" />
                   <ErrorMessage name="name" component={Text} />
                 </FormControl>
 
                 <FormControl isRequired mt={4}>
-                  <FormLabel>Description</FormLabel>
+                  <Flex align="center">
+                    <FormLabel>Description</FormLabel>
+                    <Box ml="auto">
+                      <Info id="description" />
+                    </Box>
+                  </Flex>
                   <Field
                     as={Textarea}
                     name="description"
@@ -106,7 +133,12 @@ const CreateDeploymentModal = ({
                 </FormControl>
 
                 <FormControl mt={4}>
-                  <FormLabel>Domain</FormLabel>
+                  <Flex align="center">
+                    <FormLabel>Domain</FormLabel>
+                    <Box ml="auto">
+                      <Info id="domain" />
+                    </Box>
+                  </Flex>
                   <Field
                     as={Input}
                     name="domain"
@@ -117,7 +149,12 @@ const CreateDeploymentModal = ({
                 </FormControl>
 
                 <FormControl mt={4}>
-                  <FormLabel>Memo</FormLabel>
+                  <Flex align="center">
+                    <FormLabel>Memo</FormLabel>
+                    <Box ml="auto">
+                      <Info id="memo" />
+                    </Box>
+                  </Flex>
                   <Field
                     as={Textarea}
                     name="memo"
@@ -128,7 +165,12 @@ const CreateDeploymentModal = ({
                 </FormControl>
 
                 <FormControl isRequired mt={4}>
-                  <FormLabel>File (Max 5MB)</FormLabel>
+                  <Flex align="center">
+                    <FormLabel>File (Max 5MB)</FormLabel>
+                    <Box ml="auto">
+                      <Info id="file" />
+                    </Box>
+                  </Flex>
                   <Field name="file" component={FileUpload} />
                   <ErrorMessage
                     name="file"

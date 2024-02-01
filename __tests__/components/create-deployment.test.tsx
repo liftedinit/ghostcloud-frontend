@@ -8,6 +8,18 @@ jest.mock("react-query", () => ({
   useMutation: jest.fn(),
 }))
 
+jest.mock("@chakra-ui/react", () => ({
+  ...jest.requireActual("@chakra-ui/react"),
+  useTheme: () => ({
+    colors: {
+      white: "#FFFFFF",
+      gray: {
+        500: "#A0AEC0",
+      },
+    },
+  }),
+}))
+
 describe("CreateDeploymentModal", () => {
   it("renders form elements", async () => {
     render(<CreateDeploymentModal isOpen={true} onClose={jest.fn()} />)
