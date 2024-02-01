@@ -48,6 +48,14 @@ export default function Footer() {
           <Link href="/privacy" passHref>
             Privacy Policy
           </Link>
+          <Link
+            href="https://discord.gg/ufcVz3NsEz"
+            passHref
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Discord
+          </Link>
         </Stack>
       </Container>
 

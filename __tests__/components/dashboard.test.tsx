@@ -24,6 +24,18 @@ jest.mock("../../hooks/useAuthHandlers", () => {
   })
 })
 
+jest.mock("@chakra-ui/react", () => ({
+  ...jest.requireActual("@chakra-ui/react"),
+  useTheme: () => ({
+    colors: {
+      white: "#FFFFFF",
+      gray: {
+        500: "#A0AEC0",
+      },
+    },
+  }),
+}))
+
 describe("Dashboard", () => {
   beforeEach(() => {
     useWeb3AuthStore.mockReturnValue({
