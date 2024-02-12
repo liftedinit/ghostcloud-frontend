@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Center,
+  Icon,
   Table,
   Thead,
   Tbody,
@@ -13,6 +14,8 @@ import {
   IconButton,
   Spinner,
   HStack,
+  Tooltip,
+  useTheme
 } from "@chakra-ui/react"
 import {
   ArrowBackIcon,
@@ -31,6 +34,7 @@ import {
 } from "../config/ghostcloud-chain"
 import useWeb3AuthStore from "../store/web3-auth"
 import { truncateAddress } from "../helpers/address"
+import { FaInfoCircle } from "react-icons/fa"
 
 function createUrl(name: string, address: string) {
   return `${GHOSTCLOUD_URL_SCHEME}://${name}-${address}.${GHOSTCLOUD_URL_DOMAIN}`
@@ -54,6 +58,7 @@ const Dashboard = () => {
     handlePageClick,
   ] = useFetchMetas()
   const store = useWeb3AuthStore()
+  const theme = useTheme()
 
   useEffect(() => {
     const fetchAddress = async () => {
@@ -128,7 +133,22 @@ const Dashboard = () => {
                 <Tr key={index}>
                   <Td>{meta.name}</Td>
                   <Td>{meta.description}</Td>
-                  <Td>{meta.domain}</Td>
+                  <Td>
+                  {meta.domain && (
+                      <>
+                        {meta.domain}
+                        <Tooltip label={`Set ${meta.domain} DNS A record to 35.131.208.174 to activate custom domain.`}>
+                        <Box as="span" ml="4px">
+                          <Icon
+                            as={FaInfoCircle}
+                            boxSize={4}
+                            color={theme.colors.gray[400]}
+                          />
+                        </Box>
+                        </Tooltip>
+                      </>
+                    )}
+                  </Td>
                   <Td>
                     <Link
                       href={createUrl(meta.name, address) + "/index.html"}
