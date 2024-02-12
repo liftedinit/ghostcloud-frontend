@@ -32,6 +32,9 @@ import {
   GHOSTCLOUD_URL_DOMAIN,
   GHOSTCLOUD_URL_SCHEME,
 } from "../config/ghostcloud-chain"
+import {
+  GHOSTCLOUD_INFRA_LOADBALANCER_IP
+} from "../config/ghostcloud-infra"
 import useWeb3AuthStore from "../store/web3-auth"
 import { truncateAddress } from "../helpers/address"
 import { FaInfoCircle } from "react-icons/fa"
@@ -137,7 +140,7 @@ const Dashboard = () => {
                   {meta.domain && (
                       <>
                         {meta.domain}
-                        <Tooltip label={`Set ${meta.domain} DNS A record to 35.131.208.174 to activate custom domain.`}>
+                        <Tooltip label={`Set ${meta.domain} DNS A record to ${GHOSTCLOUD_INFRA_LOADBALANCER_IP} to activate custom domain.`}>
                         <Box as="span" ml="4px">
                           <Icon
                             as={FaInfoCircle}
