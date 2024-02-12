@@ -1,6 +1,14 @@
 import useWeb3AuthStore from "../store/web3-auth"
 import DashboardComponent from "../components/dashboard"
-import { Box, Container, Grid, GridItem } from "@chakra-ui/react"
+import {
+   Alert,
+   AlertIcon,
+   Box, 
+   Center,
+   Container, 
+   Grid, 
+   GridItem 
+} from "@chakra-ui/react"
 
 export default function Dashboard() {
   const store = useWeb3AuthStore()
@@ -17,6 +25,18 @@ export default function Dashboard() {
       </Box>
     </Container>
   ) : (
-    <center style={{ color: "red" }}>Please login to view this page</center>
+
+    <Container maxW="6xl" >
+    <Grid placeItems="center" minH={"10vh"}>
+      <Center>
+        <Box>
+          <Alert status='error'>
+            <AlertIcon />
+            Please login to view this page
+          </Alert>
+        </Box>
+      </Center>
+    </Grid>
+    </Container>
   )
 }

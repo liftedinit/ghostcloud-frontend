@@ -1,6 +1,8 @@
 import { Formik, Form, Field, ErrorMessage, FormikHelpers } from "formik"
 import * as Yup from "yup"
 import {
+  Box,
+  Flex,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -18,6 +20,7 @@ import {
 import { useUpdateDeployment } from "../lib/ghostcloud"
 import FileUpload from "./file-upload"
 import { useDisplayError } from "../helpers/errors"
+import Info from "./info"
 
 export interface DeploymentData {
   name: string
@@ -96,31 +99,56 @@ const UpdateDeploymentModal = ({
             <Form>
               <ModalBody>
                 <FormControl isRequired>
-                  <FormLabel>Name</FormLabel>
+                  <Flex align="center">
+                    <FormLabel>Name</FormLabel>
+                    <Box ml="auto">
+                      <Info id="name" />
+                    </Box>
+                  </Flex>
                   <Field as={Input} isReadOnly name="name" type="text" />
                   <ErrorMessage name="name" component={Text} />
                 </FormControl>
 
                 <FormControl isRequired mt={4}>
-                  <FormLabel>Description</FormLabel>
+                  <Flex align="center">
+                    <FormLabel>Description</FormLabel>
+                    <Box ml="auto">
+                      <Info id="description" />
+                    </Box>
+                  </Flex>
                   <Field as={Textarea} name="description" type="textarea" />
                   <ErrorMessage name="description" component={Text} />
                 </FormControl>
 
                 <FormControl mt={4}>
-                  <FormLabel>Domain</FormLabel>
+                  <Flex align="center">
+                    <FormLabel>Domain</FormLabel>
+                    <Box ml="auto">
+                      <Info id="domain" />
+                    </Box>
+                  </Flex>
                   <Field as={Input} name="domain" type="text" />
                   <ErrorMessage name="domain" component={Text} />
                 </FormControl>
 
                 <FormControl mt={4}>
-                  <FormLabel>Memo</FormLabel>
+                  <Flex align="center">
+                    <FormLabel>Memo</FormLabel>
+                    <Box ml="auto">
+                      <Info id="memo" />
+                    </Box>
+                  </Flex>
                   <Field as={Textarea} name="memo" type="textarea" />
                   <ErrorMessage name="memo" component={Text} />
                 </FormControl>
 
                 <FormControl mt={4}>
-                  <FormLabel>File (Max 5MB)</FormLabel>
+                  <Flex align="center">
+                    <FormLabel>File (Max 5MB)</FormLabel>
+                    <Box ml="auto">
+                      <Info id="file" />
+                    </Box>
+                  </Flex>
                   <Field name="file" component={FileUpload} />
                   <ErrorMessage name="file" component={Text} />
                 </FormControl>
