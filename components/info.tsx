@@ -5,7 +5,7 @@ export const tips = {
   name: "The randomly generated identifier for your deployment.",
   description:
     "A description for your deployment. This must be between 1-500 characters in length.",
-  domain: "The domain where your site will be hosted.",
+  domain: "The domain where your site will be hosted. Set your domain's DNS A record to 35.131.208.174 to activate custom domain.",
   memo: "A string associated with a transaction in Web3",
   file: "Select a zip file less that 5MB in size which contains your site build. This archive must contain an index.html file in the root.",
 }
