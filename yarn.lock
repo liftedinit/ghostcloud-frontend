@@ -2053,10 +2053,10 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@liftedinit/gcjs@^0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@liftedinit/gcjs/-/gcjs-0.0.6.tgz#a223a544403005e38e7db7d7dec8c4d8ec43493a"
-  integrity sha512-F/x1CmQe2vx0xncoZMYMaJEzA235WwDSRuk+nq0FaDWhCUjc2o8al31XarD6dweOzcsAHxoJK39mvgkxxlRBIg==
+"@liftedinit/gcjs@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@liftedinit/gcjs/-/gcjs-0.1.0.tgz#98034515c0234b2d0081339c10e0e79856c752fd"
+  integrity sha512-Hi5/oWMzNz71LOdkrFGP1hJGEgeYQbieRhzanf+lhvsHMz5AtTKQV88f8S9dMfdxWGweSui0U2i1ub1M15Jruw==
   dependencies:
     "@cosmjs/amino" "0.32.0"
     "@cosmjs/proto-signing" "0.32.0"
