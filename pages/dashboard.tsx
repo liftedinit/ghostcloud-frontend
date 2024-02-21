@@ -1,3 +1,4 @@
+import React from "react"
 import useWeb3AuthStore from "../store/web3-auth"
 import DashboardComponent from "../components/dashboard"
 import {
@@ -9,13 +10,28 @@ import {
   Grid,
   GridItem,
 } from "@chakra-ui/react"
+import useOpenLoginSession from "../hooks/useOpenLoginSession"
 
 export default function Dashboard() {
   const store = useWeb3AuthStore()
   const isConnected = store.isConnected()
+  const hasSession = useOpenLoginSession()
 
-  if (store.isLoading()) {
-    return null
+  if (!hasSession) {
+    return (
+      <Container maxW="6xl">
+        <Grid placeItems="center" minH={"10vh"}>
+          <Center>
+            <Box>
+              <Alert status="error">
+                <AlertIcon />
+                Please login to view this page
+              </Alert>
+            </Box>
+          </Center>
+        </Grid>
+      </Container>
+    )
   }
 
   return isConnected ? (
@@ -28,18 +44,5 @@ export default function Dashboard() {
         </Grid>
       </Box>
     </Container>
-  ) : (
-    <Container maxW="6xl">
-      <Grid placeItems="center" minH={"10vh"}>
-        <Center>
-          <Box>
-            <Alert status="error">
-              <AlertIcon />
-              Please login to view this page
-            </Alert>
-          </Box>
-        </Center>
-      </Grid>
-    </Container>
-  )
+  ) : null
 }

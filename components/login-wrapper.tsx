@@ -1,23 +1,18 @@
 import React from "react"
-import useWeb3AuthStore from "../store/web3-auth"
 import useAuthHandlers from "../hooks/useAuthHandlers"
+import useOpenLoginSession from "../hooks/useOpenLoginSession"
 
 const LoginWrapper = ({ children }: { children: React.ReactNode }) => {
-  const store = useWeb3AuthStore()
   const { handleLogin } = useAuthHandlers()
   const [hasLoginAttempt, setHasLoginAttempt] = React.useState(false)
+  const hasSession = useOpenLoginSession()
 
   React.useEffect(() => {
-    const openLoginStore = window.localStorage.getItem("openlogin_store")
-
-    if (!openLoginStore) return
-    const { sessionId } = JSON.parse(openLoginStore)
-
-    if (sessionId.length && !hasLoginAttempt) {
+    if (hasSession && !hasLoginAttempt) {
       handleLogin(false)
       setHasLoginAttempt(true)
     }
-  }, [handleLogin, hasLoginAttempt, store])
+  }, [handleLogin, hasLoginAttempt, hasSession])
 
   return <>{children}</>
 }

@@ -11,7 +11,6 @@ interface Web3AuthState {
   setProvider: (provider: IProvider | null) => void
   setWeb3Auth: (web3auth: Web3Auth | null) => void
   isConnected: () => boolean
-  isLoading: () => boolean
   getPrivateKey: () => Promise<any>
   getAddress: () => Promise<string | null>
   logout: () => void
@@ -24,9 +23,6 @@ const useWeb3AuthStore = create<Web3AuthState>((set, get) => ({
   setWeb3Auth: (web3auth: Web3Auth | null) => set({ web3auth }),
   isConnected: () => {
     return get().web3auth?.connected ?? false
-  },
-  isLoading: () => {
-    return !get().web3auth && !get().provider
   },
   getPrivateKey: async () => {
     const provider = get().provider
