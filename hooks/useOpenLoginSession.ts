@@ -7,7 +7,10 @@ function useOpenLoginSession() {
 
   useEffect(() => {
     const openLoginStore = window.localStorage.getItem("openlogin_store")
-    if (!openLoginStore) return
+    if (!openLoginStore) {
+      setHasSession(false)
+      return
+    }
     const { sessionId } = JSON.parse(openLoginStore)
     setHasSession(!!sessionId)
   }, [store])
