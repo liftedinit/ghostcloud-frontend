@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Center,
+  Flex,
   Icon,
   Table,
   Thead,
@@ -15,7 +16,7 @@ import {
   Spinner,
   HStack,
   Tooltip,
-  useTheme
+  useTheme,
 } from "@chakra-ui/react"
 import {
   ArrowBackIcon,
@@ -32,9 +33,7 @@ import {
   GHOSTCLOUD_URL_DOMAIN,
   GHOSTCLOUD_URL_SCHEME,
 } from "../config/ghostcloud-chain"
-import {
-  GHOSTCLOUD_INFRA_LOADBALANCER_IP
-} from "../config/ghostcloud-infra"
+import { GHOSTCLOUD_INFRA_LOADBALANCER_IP } from "../config/ghostcloud-infra"
 import useWeb3AuthStore from "../store/web3-auth"
 import { truncateAddress } from "../helpers/address"
 import { FaInfoCircle } from "react-icons/fa"
@@ -87,131 +86,134 @@ const Dashboard = () => {
     }
   }
 
+  if (isMetaLoading || !metas) {
+    return (
+      <Flex
+        sx={{ width: "100vw", height: "50vh" }}
+        justify={"center"}
+        align={"center"}
+      >
+        <Spinner />
+      </Flex>
+    )
+  }
+
   return (
     <Box>
-      {isMetaLoading ? <Spinner /> : null}
-      {metas ? (
-        <>
-          <Button
-            onClick={() => setIsCreateModalOpen(true)}
-            float="right"
-            mb={2}
-          >
-            Create Deployment
-          </Button>
-          <CreateDeploymentModal
-            isOpen={isCreateModalOpen}
-            onClose={() => {
-              refetchMetas()
-              setIsCreateModalOpen(false)
-            }}
-          />
-          <UpdateDeploymentModal
-            isOpen={isUpdateModalOpen}
-            onClose={() => setIsUpdateModalOpen(false)}
-            deploymentName={selectedDeploymentName}
-            deploymentDescription={selectedDeploymentDescription}
-            deploymentDomain={selectedDeploymentDomain}
-          />
-          <RemoveDeploymentModal
-            isOpen={isRemoveModalOpen}
-            onClose={() => {
-              refetchMetas()
-              setIsRemoveModalOpen(false)
-            }}
-            deploymentName={selectedDeploymentName}
-          />
-          <Table variant="simple">
-            <Thead>
-              <Tr>
-                <Th>Name</Th>
-                <Th>Description</Th>
-                <Th>Domain</Th>
-                <Th>URL</Th>
-                <Th>Actions</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {metas.meta.map((meta, index) => (
-                <Tr key={index}>
-                  <Td>{meta.name}</Td>
-                  <Td>{meta.description}</Td>
-                  <Td>
-                  {meta.domain && (
-                      <>
-                        {meta.domain}
-                        <Tooltip label={`Set ${meta.domain} DNS A record to ${GHOSTCLOUD_INFRA_LOADBALANCER_IP} to activate custom domain.`}>
-                        <Box as="span" ml="4px">
-                          <Icon
-                            as={FaInfoCircle}
-                            boxSize={4}
-                            color={theme.colors.gray[400]}
-                          />
-                        </Box>
-                        </Tooltip>
-                      </>
-                    )}
-                  </Td>
-                  <Td>
-                    <Link
-                      href={createUrl(meta.name, address) + "/index.html"}
-                      isExternal
+      <Button onClick={() => setIsCreateModalOpen(true)} float="right" mb={2}>
+        Create Deployment
+      </Button>
+      <CreateDeploymentModal
+        isOpen={isCreateModalOpen}
+        onClose={() => {
+          refetchMetas()
+          setIsCreateModalOpen(false)
+        }}
+      />
+      <UpdateDeploymentModal
+        isOpen={isUpdateModalOpen}
+        onClose={() => setIsUpdateModalOpen(false)}
+        deploymentName={selectedDeploymentName}
+        deploymentDescription={selectedDeploymentDescription}
+        deploymentDomain={selectedDeploymentDomain}
+      />
+      <RemoveDeploymentModal
+        isOpen={isRemoveModalOpen}
+        onClose={() => {
+          refetchMetas()
+          setIsRemoveModalOpen(false)
+        }}
+        deploymentName={selectedDeploymentName}
+      />
+      <Table variant="simple">
+        <Thead>
+          <Tr>
+            <Th>Name</Th>
+            <Th>Description</Th>
+            <Th>Domain</Th>
+            <Th>URL</Th>
+            <Th>Actions</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          {metas.meta.map((meta, index) => (
+            <Tr key={index}>
+              <Td>{meta.name}</Td>
+              <Td>{meta.description}</Td>
+              <Td>
+                {meta.domain && (
+                  <>
+                    {meta.domain}
+                    <Tooltip
+                      label={`Set ${meta.domain} DNS A record to ${GHOSTCLOUD_INFRA_LOADBALANCER_IP} to activate custom domain.`}
                     >
-                      {createUrl(meta.name, truncateAddress(address, 4))}
-                    </Link>
-                  </Td>
-                  <Td>
-                    <HStack spacing={0}>
-                      <IconButton
-                        onClick={() =>
-                          handleUpdate(meta.name, meta.description, meta.domain)
-                        }
-                        aria-label="Update"
-                        icon={<EditIcon />}
-                        size="sm"
-                        mr={2}
-                      >
-                        Update
-                      </IconButton>
-                      <IconButton
-                        onClick={() => handleRemove(meta.name)}
-                        aria-label="Remove"
-                        icon={<DeleteIcon />}
-                        size="sm"
-                      >
-                        Remove
-                      </IconButton>
-                    </HStack>
-                  </Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
+                      <Box as="span" ml="4px">
+                        <Icon
+                          as={FaInfoCircle}
+                          boxSize={4}
+                          color={theme.colors.gray[400]}
+                        />
+                      </Box>
+                    </Tooltip>
+                  </>
+                )}
+              </Td>
+              <Td>
+                <Link
+                  href={createUrl(meta.name, address) + "/index.html"}
+                  isExternal
+                >
+                  {createUrl(meta.name, truncateAddress(address, 4))}
+                </Link>
+              </Td>
+              <Td>
+                <HStack spacing={0}>
+                  <IconButton
+                    onClick={() =>
+                      handleUpdate(meta.name, meta.description, meta.domain)
+                    }
+                    aria-label="Update"
+                    icon={<EditIcon />}
+                    size="sm"
+                    mr={2}
+                  >
+                    Update
+                  </IconButton>
+                  <IconButton
+                    onClick={() => handleRemove(meta.name)}
+                    aria-label="Remove"
+                    icon={<DeleteIcon />}
+                    size="sm"
+                  >
+                    Remove
+                  </IconButton>
+                </HStack>
+              </Td>
+            </Tr>
+          ))}
+        </Tbody>
+      </Table>
 
-          {pageCount > 1 && (
-            <Center my={8}>
-              <IconButton
-                icon={<ArrowBackIcon />}
-                aria-label="Previous"
-                isDisabled={currentPage === 1}
-                onClick={() => handlePageClick("prev")}
-                data-testid="previous-button"
-              />
-              <Box mx={4} data-testid="page-info">
-                {currentPage} / {pageCount}
-              </Box>
-              <IconButton
-                icon={<ArrowForwardIcon />}
-                aria-label="Next"
-                isDisabled={currentPage === pageCount}
-                onClick={() => handlePageClick("next")}
-                data-testid="next-button"
-              />
-            </Center>
-          )}
-        </>
-      ) : (
-        <div>Error fetching deployments. Is the backend online?</div>
+      {pageCount > 1 && (
+        <Center my={8}>
+          <IconButton
+            icon={<ArrowBackIcon />}
+            aria-label="Previous"
+            isDisabled={currentPage === 1}
+            onClick={() => handlePageClick("prev")}
+            data-testid="previous-button"
+          />
+          <Box mx={4} data-testid="page-info">
+            {currentPage} / {pageCount}
+          </Box>
+          <IconButton
+            icon={<ArrowForwardIcon />}
+            aria-label="Next"
+            isDisabled={currentPage === pageCount}
+            onClick={() => handlePageClick("next")}
+            data-testid="next-button"
+          />
+        </Center>
       )}
     </Box>
   )

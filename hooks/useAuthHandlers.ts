@@ -17,7 +17,7 @@ export default function useAuthHandlers() {
 
   // Handle the login to Web3Auth.
   // Redirect to the dashboard if the user is already connected.
-  const handleLogin = async () => {
+  const handleLogin = async (redirectToDashboard: boolean = true) => {
     if (!store.isConnected()) {
       const uiConfig = {
         ...GHOSTCLOUD_UI_CONFIG,
@@ -36,7 +36,7 @@ export default function useAuthHandlers() {
         })
       }
     }
-    await router.push("/dashboard")
+    redirectToDashboard && (await router.push("/dashboard"))
   }
 
   // Handle the logout from Web3Auth.
