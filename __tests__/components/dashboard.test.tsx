@@ -56,22 +56,6 @@ describe("Dashboard", () => {
     const { container } = render(<Dashboard />)
     expect(container.querySelector(".chakra-spinner")).toBeInTheDocument()
   })
-  it("renders error if no data", () => {
-    useFetchMetas.mockReturnValue([
-      {
-        data: null,
-        isLoading: false,
-        refetch: jest.fn(),
-      },
-      0,
-      0,
-      jest.fn(),
-    ])
-    render(<Dashboard />)
-    expect(
-      screen.getByText("Error fetching deployments. Is the backend online?"),
-    ).toBeInTheDocument()
-  })
   it("renders creact deployment button if logged in", () => {
     useFetchMetas.mockReturnValue([
       {

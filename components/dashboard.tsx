@@ -88,11 +88,7 @@ const Dashboard = () => {
 
   if (isMetaLoading || !metas) {
     return (
-      <Flex
-        sx={{ width: "100vw", height: "50vh" }}
-        justify={"center"}
-        align={"center"}
-      >
+      <Flex sx={{ height: "50vh" }} justify={"center"} align={"center"}>
         <Spinner />
       </Flex>
     )

@@ -3,7 +3,7 @@ import useWeb3AuthStore from "../store/web3-auth"
 
 function useOpenLoginSession() {
   const store = useWeb3AuthStore()
-  const [hasSession, setHasSession] = useState(true)
+  const [hasSession, setHasSession] = useState(false)
 
   useEffect(() => {
     const openLoginStore = window.localStorage.getItem("openlogin_store")

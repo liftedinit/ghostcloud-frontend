@@ -16,8 +16,21 @@ export default function Dashboard() {
   const store = useWeb3AuthStore()
   const isConnected = store.isConnected()
   const hasSession = useOpenLoginSession()
+  const [hasTimedOut, setHasTimedOut] = React.useState(false)
 
-  if (!hasSession) {
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setHasTimedOut(!hasSession && !isConnected)
+    }, 500)
+
+    return () => {
+      if (!hasTimedOut) {
+        clearTimeout(timer)
+      }
+    }
+  }, [isConnected, hasSession]) // eslint-disable-line
+
+  if (hasTimedOut) {
     return (
       <Container maxW="6xl">
         <Grid placeItems="center" minH={"10vh"}>
