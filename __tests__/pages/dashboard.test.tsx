@@ -1,19 +1,21 @@
 // @ts-nocheck
 import "@testing-library/jest-dom"
-import { render, screen } from "@testing-library/react"
+import { render, screen, waitFor } from "@testing-library/react"
 import Dashboard from "../../pages/dashboard"
 import useWeb3AuthStore from "../../store/web3-auth"
 
 jest.mock("../../store/web3-auth", () => jest.fn())
 describe("Dashboard", () => {
-  it("renders login message if not connected", () => {
+  it("renders login message if not connected", async () => {
     useWeb3AuthStore.mockReturnValue({
       // provider: null,
       isConnected: () => false,
     })
     render(<Dashboard />)
-    expect(
-      screen.getByText("Please login to view this page"),
-    ).toBeInTheDocument()
+    await waitFor(() => {
+      expect(
+        screen.getByText("Please login to view this page"),
+      ).toBeInTheDocument()
+    })
   })
 })
