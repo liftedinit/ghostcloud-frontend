@@ -17,7 +17,11 @@ export default function useAuthHandlers() {
 
   // Handle the login to Web3Auth.
   // Redirect to the dashboard if the user is already connected.
-  const handleLogin = async (redirectToDashboard: boolean | null = null) => {
+  const handleLogin = async (
+    ev: any,
+    redirectToDashboard: boolean | null = null,
+  ) => {
+    console.log("==ev", ev)
     if (!store.isConnected()) {
       const uiConfig = {
         ...GHOSTCLOUD_UI_CONFIG,

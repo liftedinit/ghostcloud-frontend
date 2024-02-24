@@ -9,7 +9,7 @@ const LoginWrapper = ({ children }: { children: React.ReactNode }) => {
 
   React.useEffect(() => {
     if (hasSession && !hasLoginAttempt) {
-      handleLogin(false)
+      handleLogin({}, false)
       setHasLoginAttempt(true)
     }
   }, [handleLogin, hasLoginAttempt, hasSession])
