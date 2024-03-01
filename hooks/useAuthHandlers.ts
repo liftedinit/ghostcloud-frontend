@@ -21,7 +21,6 @@ export default function useAuthHandlers() {
     ev: any,
     redirectToDashboard: boolean | null = null,
   ) => {
-    console.log("==ev", ev)
     if (!store.isConnected()) {
       const uiConfig = {
         ...GHOSTCLOUD_UI_CONFIG,
