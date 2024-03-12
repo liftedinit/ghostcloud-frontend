@@ -66,7 +66,9 @@ export default function Home() {
                 era of web technology effortlessly.
               </Text>
               <Stack spacing={6} direction="row">
-                <Button onClick={handleLogin}>Get started</Button>
+                <Button onClick={ev => handleLogin(ev, true)}>
+                  Get started
+                </Button>
               </Stack>
             </Stack>
           </Box>

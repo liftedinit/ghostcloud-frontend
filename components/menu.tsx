@@ -38,7 +38,7 @@ const Menu: React.FC<LoginProps> = () => {
             <MenuItem onClick={handleLogout}>Logout</MenuItem>
           </>
         ) : (
-          <MenuItem onClick={handleLogin}>Login</MenuItem>
+          <MenuItem onClick={ev => handleLogin(ev, true)}>Login</MenuItem>
         )}
       </MenuList>
     </ChakraMenu>
