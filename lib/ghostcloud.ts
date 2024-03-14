@@ -268,7 +268,9 @@ export const useRemoveDeployment = () => {
 const pageLimit = 10
 
 // Query the Ghostcloud RPC endpoint for deployments created by the current user
-export const useFetchMetas = (): [
+export const useFetchMetas = (
+  showError: boolean = true,
+): [
   UseQueryResult<QueryMetasResponse | undefined, unknown>,
   number,
   number,
@@ -315,7 +317,7 @@ export const useFetchMetas = (): [
     queryKey: ["metas", page],
     queryFn: list,
     onError: error => {
-      displayError("Failed to fetch deployments", error as Error)
+      showError && displayError("Failed to fetch deployments", error as Error)
     },
     keepPreviousData: true,
   })
