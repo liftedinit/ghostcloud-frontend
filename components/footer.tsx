@@ -9,11 +9,16 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react"
 import Link from "next/link"
+import useWeb3AuthStore from "../store/web3-auth"
+
 import logoDark from "../public/logo-white.png"
 import logoLight from "../public/logo-black.png"
 import manifest from "../public/manifest-powered.webp"
 
 export default function Footer() {
+  const store = useWeb3AuthStore()
+  const isConnected = store.isConnected()
+
   const bgColor = useColorModeValue(
     "modes.dark.background",
     "modes.light.background",
@@ -42,6 +47,16 @@ export default function Footer() {
           <Link href="/" passHref>
             Home
           </Link>
+          {isConnected && (
+            <>
+              <Link href="/dashboard" passHref>
+                Dashboard
+              </Link>
+              <Link href="/status" passHref>
+                Status
+              </Link>
+            </>
+          )}
           <Link href="/terms" passHref>
             Terms Of Service
           </Link>
