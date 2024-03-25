@@ -1,4 +1,4 @@
-import { useFetchMetas } from "../lib/ghostcloud"
+import { useFetchBalance, useFetchMetas } from "../lib/ghostcloud"
 import { useEffect, useState } from "react"
 import useWeb3AuthStore from "../store/web3-auth"
 import useOpenLoginSession from "../hooks/useOpenLoginSession"
@@ -46,12 +46,20 @@ const Status = () => {
   const store = useWeb3AuthStore()
   const isConnected = store.isConnected()
   const router = useRouter()
-  const [{ data: metas, isLoading: isMetaLoading, refetch: refetchMetas }] =
-    useFetchMetas(false)
+  const [
+    {
+      data: metas,
+      error: metaError,
+      isLoading: isMetaLoading,
+      refetch: refetchMetas,
+    },
+  ] = useFetchMetas(false)
   const { pagination: { total = 0 } = {} } = metas || {}
-  const [error, setError] = useState(false)
+  const [hasMetaError, setHasMetaError] = useState(false)
+  const [hasBalanceError, setHasBalanceError] = useState(false)
   const [updated, setUpdated] = useState("")
   const hasSession = useOpenLoginSession()
+  const { error: balanceError } = useFetchBalance(false)
 
   // Redirect if not logged in
   useEffect(() => {
@@ -68,20 +76,15 @@ const Status = () => {
     }
   }, [hasSession, isConnected, metas, refetchMetas])
 
-  // Refetch metas every 30 seconds
   useEffect(() => {
-    const heartbeatInterval = setInterval(() => {
-      refetchMetas()
-      setUpdated(new Date().toLocaleString())
-      if (!isMetaLoading && !metas?.meta) {
-        setError(true)
-      }
-    }, 30000)
+    setUpdated(new Date().toLocaleString())
+    setHasBalanceError(!!balanceError)
+  }, [balanceError])
 
-    return () => {
-      clearInterval(heartbeatInterval)
-    }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    setUpdated(new Date().toLocaleString())
+    setHasMetaError(!!metaError)
+  }, [metaError])
 
   if (!hasSession && !isConnected && isMetaLoading) {
     return (
@@ -101,16 +104,18 @@ const Status = () => {
           <Text mb={5}>Last Updated: {updated}</Text>
 
           <StatusCard
-            error={error}
-            msg={error ? "Systems Degraded" : "All Systems Operational"}
+            error={hasBalanceError}
+            msg={
+              hasBalanceError ? "Systems Degraded" : "All Systems Operational"
+            }
           />
 
           {metas?.meta && metas.meta.length > 0 && (
             <StatusCard
-              error={error}
+              error={hasMetaError}
               msg={
-                error
-                  ? "Systems Degraded"
+                hasMetaError
+                  ? "Deployments Degraded"
                   : `${total.toString()} Deployment${
                       total > 1 ? "s" : ""
                     } Active`

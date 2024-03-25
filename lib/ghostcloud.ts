@@ -333,7 +333,9 @@ export const useFetchMetas = (
   return [query, page + 1, pageCount, handlePageClick]
 }
 
-export const useFetchBalance = (): UseQueryResult<Coin, Error> => {
+export const useFetchBalance = (
+  showError: boolean = true,
+): UseQueryResult<Coin, Error> => {
   const store = useWeb3AuthStore()
   const displayError = useDisplayError()
 
@@ -364,7 +366,7 @@ export const useFetchBalance = (): UseQueryResult<Coin, Error> => {
     queryKey: "balance",
     queryFn: fetchBalance,
     onError: error => {
-      displayError("Failed to fetch balance", error)
+      showError && displayError("Failed to fetch balance", error)
     },
   })
 }
