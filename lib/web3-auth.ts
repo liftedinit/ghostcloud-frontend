@@ -10,6 +10,7 @@ import {
 import useWeb3AuthStore from "../store/web3-auth"
 import { CustomChainConfig } from "@web3auth/base"
 import { UIConfig } from "@web3auth/ui"
+import { CommonPrivateKeyProvider } from "@web3auth/base-provider"
 
 // Initialize the Web3Auth provider using the provided chain and UI configs.
 // This function initializes the Web3Auth login modal and connects to the provider.
@@ -18,11 +19,18 @@ export async function web3AuthInitProvider(
   uiConfig: UIConfig,
 ) {
   try {
+    const commonPrivateKeyProvider = new CommonPrivateKeyProvider({
+      config: {
+        chainConfig,
+      },
+    })
+
     const web3auth = new Web3Auth({
       clientId: WEB3AUTH_CLIENT_ID,
       web3AuthNetwork: WEB3AUTH_NETWORK,
       chainConfig: chainConfig,
       uiConfig: uiConfig,
+      privateKeyProvider: commonPrivateKeyProvider,
     })
     const openloginAdapter = new OpenloginAdapter({
       adapterSettings: WEB3AUTH_ADAPTER_SETTINGS,
