@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - feat/docker
     tags:
       - '*'
 
@@ -54,12 +53,12 @@ jobs:
         with:
           context: .
           push: true
-          tags: jgriffin555/ghostcloud-frontend:${{ env.GIT_TAG }}
+          tags: lifted/ghostcloud-frontend:${{ env.GIT_TAG }}
 
       - name: Build and push with environment tag for latest images
-        if: github.ref == 'refs/heads/feat/docker'
+        if: github.ref == 'refs/heads/main'
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: jgriffin555/ghostcloud-frontend:${{ matrix.environment }}
+          tags: lifted/ghostcloud-frontend:${{ matrix.environment }}
