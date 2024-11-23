@@ -5,8 +5,9 @@ on: [push]
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    environment: 'Development'
-
+    strategy:
+      matrix:
+        environment: [dev, testnet, alpha]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -36,16 +37,13 @@ jobs:
           echo "NEXT_PUBLIC_GHOSTCLOUD_GAS_PRICE=${{ vars.NEXT_PUBLIC_GHOSTCLOUD_GAS_PRICE }}" >> .env
           echo "NEXT_PUBLIC_GHOSTCLOUD_GAS_LIMIT_MULTIPLIER=${{ vars.NEXT_PUBLIC_GHOSTCLOUD_GAS_LIMIT_MULTIPLIER }}" >> .env
 
-          cat .env
-
       - name: Get the Git tag
-        id: get_tag
         run: |
-          echo "GIT_TAG=$(echo ${GITHUB_REF#refs/tags/})" >> $GITHUB_ENV
+          echo $GITHUB_REF_NAME
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: jgriffin555/ghostcloud-frontend:latest
+          tags: jgriffin555/ghostcloud-frontend:${{ matrix.environment }}
