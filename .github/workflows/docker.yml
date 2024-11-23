@@ -8,6 +8,7 @@ jobs:
     strategy:
       matrix:
         environment: [dev, testnet, alpha]
+    environment: ${{ matrix.environment }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
