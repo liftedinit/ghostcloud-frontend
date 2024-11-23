@@ -1,6 +1,11 @@
 name: Build and Push Docker Image
 
-on: [push]
+on:
+  push:
+    branches:
+      - feat/docker
+    tags:
+      - '*'
 
 jobs:
   build-and-push:
@@ -38,11 +43,16 @@ jobs:
           echo "NEXT_PUBLIC_GHOSTCLOUD_GAS_PRICE=${{ vars.NEXT_PUBLIC_GHOSTCLOUD_GAS_PRICE }}" >> .env
           echo "NEXT_PUBLIC_GHOSTCLOUD_GAS_LIMIT_MULTIPLIER=${{ vars.NEXT_PUBLIC_GHOSTCLOUD_GAS_LIMIT_MULTIPLIER }}" >> .env
 
-      - name: Get the Git tag
-        run: |
-          echo $GITHUB_REF_NAME
+      - name: Build and push with github release tag
+        if: matrix.environment == 'alpha' && startsWith(github.ref, 'refs/tags/')
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: jgriffin555/ghostcloud-frontend:${{ env.GITHUB_REF_NAME }}
 
-      - name: Build and push Docker image
+      - name: Build and push with environment tag for latest images
+        if: github.ref == 'refs/heads/main'
         uses: docker/build-push-action@v6
         with:
           context: .
