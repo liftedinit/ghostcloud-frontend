@@ -37,7 +37,7 @@ import {
   Coin,
   SigningStargateClient,
 } from "@cosmjs/stargate"
-import { hexToBytes } from "@metamask/utils"
+import { fromHex } from "@cosmjs/encoding"
 
 async function createSigner(pk: Uint8Array) {
   const getSignerFromKey = async (): Promise<OfflineDirectSigner> => {
@@ -116,7 +116,7 @@ export const useCreateDeployment = () => {
     }
 
     const client = await createGhostcloudRpcClient(
-      hexToBytes(await store.getPrivateKey()),
+      fromHex(await store.getPrivateKey()),
     )
     const msg = await createDeploymentMsg(data, creator)
     const gasEstimation = await client.simulate(creator, [msg], "")
@@ -186,7 +186,7 @@ export const useUpdateDeployment = () => {
     }
 
     const client = await createGhostcloudRpcClient(
-      hexToBytes(await store.getPrivateKey()),
+      fromHex(await store.getPrivateKey()),
     )
     const msg = await updateDeploymentMsg(data, creator)
     const gasEstimation = await client.simulate(creator, [msg], "")
@@ -237,7 +237,7 @@ export const useRemoveDeployment = () => {
     }
 
     const client = await createGhostcloudRpcClient(
-      hexToBytes(await store.getPrivateKey()),
+      fromHex(await store.getPrivateKey()),
     )
     const msg = await removeDeploymentMsg(name, creator)
     const gasEstimation = await client.simulate(creator, [msg], "")
