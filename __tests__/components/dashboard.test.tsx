@@ -1,14 +1,8 @@
 // @ts-nocheck
-import { render, screen, fireEvent, waitFor } from "@testing-library/react"
-import { useQuery } from "react-query"
+import { render, screen, fireEvent } from "@testing-library/react"
 import Dashboard from "../../components/dashboard"
 import useWeb3AuthStore from "../../store/web3-auth"
-import {
-  useCreateDeployment,
-  useFetchMetas,
-  useUpdateDeployment,
-  useRemoveDeployment,
-} from "../../lib/ghostcloud"
+import { useFetchMetas } from "../../lib/ghostcloud"
 
 jest.mock("../../lib/ghostcloud", () => ({
   useCreateDeployment: jest.fn(),

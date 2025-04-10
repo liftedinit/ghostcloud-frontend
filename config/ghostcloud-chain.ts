@@ -9,6 +9,9 @@ export const GHOSTCLOUD_ADDRESS_PREFIX =
 export const GHOSTCLOUD_RPC_TARGET =
   process.env["NEXT_PUBLIC_GHOSTCLOUD_RPC_TARGET"] ??
   "https://rpc.testnet.ghostcloud.org"
+export const GHOSTCLOUD_REST_TARGET =
+  process.env["NEXT_PUBLIC_GHOSTCLOUD_REST_TARGET"] ??
+  "https://rest.testnet.ghostcloud.org"
 export const GHOSTCLOUD_CHAIN_NAMESPACE = (process.env[
   "NEXT_PUBLIC_GHOSTCLOUD_CHAIN_NAMESPACE"
 ] ?? "other") as ChainNamespaceType
