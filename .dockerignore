@@ -1,0 +1,5 @@
+__tests__ 
+.circleci 
+.github
+node_modules
+.env.local
