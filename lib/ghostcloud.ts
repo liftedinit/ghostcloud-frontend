@@ -12,7 +12,6 @@ import {
   GHOSTCLOUD_DENOM,
   GHOSTCLOUD_GAS_LIMIT_MULTIPLIER,
   GHOSTCLOUD_GAS_PRICE,
-  GHOSTCLOUD_REST_TARGET,
   GHOSTCLOUD_RPC_TARGET,
 } from "../config/ghostcloud-chain"
 import useWeb3AuthStore from "../store/web3-auth"
@@ -31,10 +30,7 @@ import {
   useQueryClient,
   UseQueryResult,
 } from "@tanstack/react-query"
-import {
-  QueryMetasResponse,
-  QueryMetasResponseSDKType,
-} from "@liftedinit/gcjs/dist/codegen/ghostcloud/ghostcloud/query"
+import { QueryMetasResponseSDKType } from "@liftedinit/gcjs/dist/codegen/ghostcloud/ghostcloud/query"
 import {
   AminoTypes,
   calculateFee,
