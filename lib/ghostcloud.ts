@@ -12,6 +12,7 @@ import {
   GHOSTCLOUD_DENOM,
   GHOSTCLOUD_GAS_LIMIT_MULTIPLIER,
   GHOSTCLOUD_GAS_PRICE,
+  GHOSTCLOUD_REST_TARGET,
   GHOSTCLOUD_RPC_TARGET,
 } from "../config/ghostcloud-chain"
 import useWeb3AuthStore from "../store/web3-auth"
@@ -30,7 +31,10 @@ import {
   useQueryClient,
   UseQueryResult,
 } from "@tanstack/react-query"
-import { QueryMetasResponse } from "@liftedinit/gcjs/dist/codegen/ghostcloud/ghostcloud/query"
+import {
+  QueryMetasResponse,
+  QueryMetasResponseSDKType,
+} from "@liftedinit/gcjs/dist/codegen/ghostcloud/ghostcloud/query"
 import {
   AminoTypes,
   calculateFee,
@@ -38,6 +42,7 @@ import {
   SigningStargateClient,
 } from "@cosmjs/stargate"
 import { fromHex } from "@cosmjs/encoding"
+import { useLcdQueryClient } from "../hooks/useLcdQueryClient"
 
 async function createSigner(pk: Uint8Array) {
   const getSignerFromKey = async (): Promise<OfflineDirectSigner> => {
@@ -143,7 +148,7 @@ export const useCreateDeployment = () => {
     mutationFn: create,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["metas"] })
-      queryClient.invalidateQueries({ queryKey: ["balance"] })
+      queryClient.invalidateQueries({ queryKey: ["userBalance"] })
     },
   })
 }
@@ -214,7 +219,7 @@ export const useUpdateDeployment = () => {
     mutationFn: update,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["metas"] })
-      queryClient.invalidateQueries({ queryKey: ["balance"] })
+      queryClient.invalidateQueries({ queryKey: ["userBalance"] })
     },
   })
 }
@@ -260,16 +265,16 @@ export const useRemoveDeployment = () => {
     mutationFn: remove,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["metas"] })
-      queryClient.invalidateQueries({ queryKey: ["balance"] })
+      queryClient.invalidateQueries({ queryKey: ["userBalance"] })
     },
   })
 }
 
 const pageLimit = 10
 
-// Query the Ghostcloud RPC endpoint for deployments created by the current user
+// Query the Ghostcloud REST endpoint for deployments created by the current user
 export const useFetchMetas = (): [
-  UseQueryResult<QueryMetasResponse | undefined, unknown>,
+  UseQueryResult<QueryMetasResponseSDKType | undefined, unknown>,
   number,
   number,
   (direction: string) => void,
@@ -277,15 +282,15 @@ export const useFetchMetas = (): [
   const [pageCount, setPageCount] = React.useState<number>(0)
   const [page, setPage] = React.useState(0)
   const store = useWeb3AuthStore()
+  const { lcdQueryClient } = useLcdQueryClient()
 
   const list = async () => {
     const address = await store.getAddress()
-    if (address) {
-      const { createRPCQueryClient } = ghostcloud.ClientFactory
-      const client = await createRPCQueryClient({
-        rpcEndpoint: GHOSTCLOUD_RPC_TARGET,
-      })
+    if (!lcdQueryClient) {
+      throw new Error("LCD Client not ready")
+    }
 
+    if (address) {
       const filter = ghostcloud.ghostcloud.Filter.fromPartial({
         field: ghostcloud.ghostcloud.Filter_Field.CREATOR,
         operator: ghostcloud.ghostcloud.Filter_Operator.EQUAL,
@@ -300,7 +305,7 @@ export const useFetchMetas = (): [
         filters: [filter],
         pagination,
       })
-      const res = await client.ghostcloud.ghostcloud.metas(request)
+      const res = await lcdQueryClient.ghostcloud.ghostcloud.metas(request)
 
       if (res.pagination?.total ?? 0 > 0) {
         setPageCount(Math.ceil(Number(res.pagination?.total) / pageLimit))
@@ -332,21 +337,19 @@ export const useFetchMetas = (): [
 
 export const useFetchBalance = (): UseQueryResult<Coin, Error> => {
   const store = useWeb3AuthStore()
+  const { lcdQueryClient } = useLcdQueryClient()
 
   const fetchBalance = async () => {
+    if (!lcdQueryClient) {
+      throw new Error("LCD Client not ready")
+    }
+
     const address = await store.getAddress()
     if (address) {
-      const { createRPCQueryClient } = cosmos.ClientFactory
-      const client = await createRPCQueryClient({
-        rpcEndpoint: GHOSTCLOUD_RPC_TARGET,
-      })
-
-      // Replace this with the actual method to fetch the balance
-      const request = cosmos.bank.v1beta1.QueryBalanceRequest.fromPartial({
-        address: address,
+      const response = await lcdQueryClient.cosmos.bank.v1beta1.balance({
+        address,
         denom: GHOSTCLOUD_DENOM,
       })
-      const response = await client.cosmos.bank.v1beta1.balance(request)
 
       if (response.balance) {
         return response.balance
@@ -357,7 +360,7 @@ export const useFetchBalance = (): UseQueryResult<Coin, Error> => {
   }
 
   return useQuery({
-    queryKey: ["balance"],
+    queryKey: ["userBalance"],
     queryFn: fetchBalance,
     meta: {
       errorMessage: "Failed to fetch balance",
