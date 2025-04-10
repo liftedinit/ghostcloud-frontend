@@ -24,13 +24,13 @@ import {
 import { DeploymentData } from "../components/create-deployment"
 import { fileToArrayBuffer } from "../helpers/files"
 import {
+  keepPreviousData,
   useMutation,
   useQuery,
   useQueryClient,
   UseQueryResult,
-} from "react-query"
+} from "@tanstack/react-query"
 import { QueryMetasResponse } from "@liftedinit/gcjs/dist/codegen/ghostcloud/ghostcloud/query"
-import { useDisplayError } from "../helpers/errors"
 import {
   AminoTypes,
   calculateFee,
@@ -142,8 +142,8 @@ export const useCreateDeployment = () => {
   return useMutation({
     mutationFn: create,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: "metas" })
-      queryClient.invalidateQueries({ queryKey: "balance" })
+      queryClient.invalidateQueries({ queryKey: ["metas"] })
+      queryClient.invalidateQueries({ queryKey: ["balance"] })
     },
   })
 }
@@ -213,8 +213,8 @@ export const useUpdateDeployment = () => {
   return useMutation({
     mutationFn: update,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: "metas" })
-      queryClient.invalidateQueries({ queryKey: "balance" })
+      queryClient.invalidateQueries({ queryKey: ["metas"] })
+      queryClient.invalidateQueries({ queryKey: ["balance"] })
     },
   })
 }
@@ -259,8 +259,8 @@ export const useRemoveDeployment = () => {
   return useMutation({
     mutationFn: remove,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: "metas" })
-      queryClient.invalidateQueries({ queryKey: "balance" })
+      queryClient.invalidateQueries({ queryKey: ["metas"] })
+      queryClient.invalidateQueries({ queryKey: ["balance"] })
     },
   })
 }
@@ -277,7 +277,6 @@ export const useFetchMetas = (): [
   const [pageCount, setPageCount] = React.useState<number>(0)
   const [page, setPage] = React.useState(0)
   const store = useWeb3AuthStore()
-  const displayError = useDisplayError()
 
   const list = async () => {
     const address = await store.getAddress()
@@ -314,10 +313,10 @@ export const useFetchMetas = (): [
   const query = useQuery({
     queryKey: ["metas", page],
     queryFn: list,
-    onError: error => {
-      displayError("Failed to fetch deployments", error as Error)
+    meta: {
+      errorMessage: "Failed to fetch deployments",
     },
-    keepPreviousData: true,
+    placeholderData: keepPreviousData,
   })
 
   const handlePageClick = (direction: string) => {
@@ -333,7 +332,6 @@ export const useFetchMetas = (): [
 
 export const useFetchBalance = (): UseQueryResult<Coin, Error> => {
   const store = useWeb3AuthStore()
-  const displayError = useDisplayError()
 
   const fetchBalance = async () => {
     const address = await store.getAddress()
@@ -353,38 +351,37 @@ export const useFetchBalance = (): UseQueryResult<Coin, Error> => {
       if (response.balance) {
         return response.balance
       } else {
-        throw new Error("Failed to fetch balance")
+        throw new Error("No balance available")
       }
     }
   }
 
   return useQuery({
-    queryKey: "balance",
+    queryKey: ["balance"],
     queryFn: fetchBalance,
-    onError: error => {
-      displayError("Failed to fetch balance", error)
+    meta: {
+      errorMessage: "Failed to fetch balance",
     },
   })
 }
 
 export const useFetchAddress = (): UseQueryResult<string, Error> => {
   const store = useWeb3AuthStore()
-  const displayError = useDisplayError()
 
   const fetchAddress = async () => {
     const address = await store.getAddress()
     if (address) {
       return address
     } else {
-      throw new Error("Failed to fetch address")
+      throw new Error("No address available")
     }
   }
 
   return useQuery({
-    queryKey: "address",
+    queryKey: ["address"],
     queryFn: fetchAddress,
-    onError: error => {
-      displayError("Failed to fetch address", error)
+    meta: {
+      errorMessage: "Failed to fetch address",
     },
   })
 }

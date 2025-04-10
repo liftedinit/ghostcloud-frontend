@@ -2,7 +2,7 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react"
 import CreateDeploymentModal from "../../components/create-deployment"
 
-jest.mock("react-query", () => ({
+jest.mock("@tanstack/react-query", () => ({
   useQuery: jest.fn(),
   useQueryClient: jest.fn(),
   useMutation: jest.fn(),

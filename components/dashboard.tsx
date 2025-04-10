@@ -37,6 +37,7 @@ import { GHOSTCLOUD_INFRA_LOADBALANCER_IP } from "../config/ghostcloud-infra"
 import useWeb3AuthStore from "../store/web3-auth"
 import { truncateAddress } from "../helpers/address"
 import { FaInfoCircle } from "react-icons/fa"
+import { Meta } from "@liftedinit/gcjs/dist/codegen/ghostcloud/ghostcloud/meta"
 
 function createUrl(name: string, address: string) {
   return `${GHOSTCLOUD_URL_SCHEME}://${name}-${address}.${GHOSTCLOUD_URL_DOMAIN}`
@@ -132,7 +133,7 @@ const Dashboard = () => {
           </Tr>
         </Thead>
         <Tbody>
-          {metas.meta.map((meta, index) => (
+          {metas.meta.map((meta: Meta, index: number) => (
             <Tr key={index}>
               <Td>{meta.name}</Td>
               <Td>{meta.description}</Td>
