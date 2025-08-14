@@ -1,10 +1,10 @@
 // @ts-nocheck
 import "@testing-library/jest-dom"
 import { render, screen } from "@testing-library/react"
-import { useQuery } from "react-query"
+import { useQuery } from "@tanstack/react-query"
 import BalanceDisplay from "../../components/balance-display"
 
-jest.mock("react-query", () => ({
+jest.mock("@tanstack/react-query", () => ({
   useQuery: jest.fn(),
 }))
 

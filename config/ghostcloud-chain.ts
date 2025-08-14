@@ -9,6 +9,9 @@ export const GHOSTCLOUD_ADDRESS_PREFIX =
 export const GHOSTCLOUD_RPC_TARGET =
   process.env["NEXT_PUBLIC_GHOSTCLOUD_RPC_TARGET"] ??
   "https://rpc.testnet.ghostcloud.org"
+export const GHOSTCLOUD_REST_TARGET =
+  process.env["NEXT_PUBLIC_GHOSTCLOUD_REST_TARGET"] ??
+  "https://rest.testnet.ghostcloud.org"
 export const GHOSTCLOUD_CHAIN_NAMESPACE = (process.env[
   "NEXT_PUBLIC_GHOSTCLOUD_CHAIN_NAMESPACE"
 ] ?? "other") as ChainNamespaceType
@@ -17,7 +20,7 @@ export const GHOSTCLOUD_DISPLAY_NAME =
 export const GHOSTCLOUD_CHAIN_ID =
   process.env["NEXT_PUBLIC_GHOSTCLOUD_CHAIN_ID"] ?? "gc-testnet-1"
 export const GHOSTCLOUD_DENOM =
-  process.env["NEXT_PUBLIC_GHOSTCLOUD_DENOM"] ?? "token"
+  process.env["NEXT_PUBLIC_GHOSTCLOUD_DENOM"] ?? "ugcx"
 export const GHOSTCLOUD_URL_DOMAIN =
   process.env["NEXT_PUBLIC_GHOSTCLOUD_URL_DOMAIN"] ?? "localhost:8880"
 export const GHOSTCLOUD_URL_SCHEME =
