@@ -1,8 +1,8 @@
-import { ghostcloud } from "@liftedinit/gcjs"
+import { liftedinit } from "@liftedinit/gcjs"
 import { useQuery } from "@tanstack/react-query"
 import { GHOSTCLOUD_REST_TARGET } from "../config/ghostcloud-chain"
 
-const createLcdQueryClient = ghostcloud.ClientFactory.createLCDClient
+const createLcdQueryClient = liftedinit.ClientFactory.createLCDClient
 
 export const useLcdQueryClient = () => {
   const lcdQueryClient = useQuery({

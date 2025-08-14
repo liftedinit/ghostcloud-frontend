@@ -20,7 +20,7 @@ export const GHOSTCLOUD_DISPLAY_NAME =
 export const GHOSTCLOUD_CHAIN_ID =
   process.env["NEXT_PUBLIC_GHOSTCLOUD_CHAIN_ID"] ?? "gc-testnet-1"
 export const GHOSTCLOUD_DENOM =
-  process.env["NEXT_PUBLIC_GHOSTCLOUD_DENOM"] ?? "token"
+  process.env["NEXT_PUBLIC_GHOSTCLOUD_DENOM"] ?? "ugcx"
 export const GHOSTCLOUD_URL_DOMAIN =
   process.env["NEXT_PUBLIC_GHOSTCLOUD_URL_DOMAIN"] ?? "localhost:8880"
 export const GHOSTCLOUD_URL_SCHEME =

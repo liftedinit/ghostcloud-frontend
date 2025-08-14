@@ -3,9 +3,9 @@ import {
   cosmos,
   cosmosAminoConverters,
   cosmosProtoRegistry,
-  ghostcloud,
-  ghostcloudAminoConverters,
-  ghostcloudProtoRegistry,
+  liftedinit,
+  liftedinitAminoConverters,
+  liftedinitProtoRegistry,
 } from "@liftedinit/gcjs"
 import {
   GHOSTCLOUD_ADDRESS_PREFIX,
@@ -30,7 +30,6 @@ import {
   useQueryClient,
   UseQueryResult,
 } from "@tanstack/react-query"
-import { QueryMetasResponseSDKType } from "@liftedinit/gcjs/dist/codegen/ghostcloud/ghostcloud/query"
 import {
   AminoTypes,
   calculateFee,
@@ -39,6 +38,7 @@ import {
 } from "@cosmjs/stargate"
 import { fromHex } from "@cosmjs/encoding"
 import { useLcdQueryClient } from "../hooks/useLcdQueryClient"
+import { QueryMetasResponseSDKType } from "@liftedinit/gcjs/dist/codegen/liftedinit/ghostcloud/v1/query"
 
 async function createSigner(pk: Uint8Array) {
   const getSignerFromKey = async (): Promise<OfflineDirectSigner> => {
@@ -50,12 +50,12 @@ async function createStargateSigningClient(pk: Uint8Array) {
   const signer = await createSigner(pk)
   const protoRegistry: ReadonlyArray<[string, GeneratedType]> = [
     ...cosmosProtoRegistry,
-    ...ghostcloudProtoRegistry,
+    ...liftedinitProtoRegistry,
   ]
 
   const aminoConverters = {
     ...cosmosAminoConverters,
-    ...ghostcloudAminoConverters,
+    ...liftedinitAminoConverters,
   }
 
   const registry = new Registry(protoRegistry)
@@ -82,15 +82,16 @@ async function createDeploymentMsg(data: DeploymentData, creator: string) {
   let payload
   if (data.file) {
     const buffer = await fileToArrayBuffer(data.file)
-    payload = ghostcloud.ghostcloud.Payload.fromPartial({
-      archive: ghostcloud.ghostcloud.Archive.fromPartial({
-        type: ghostcloud.ghostcloud.ArchiveType.Zip,
+    payload = liftedinit.ghostcloud.v1.Payload.fromPartial({
+      archive: liftedinit.ghostcloud.v1.Archive.fromPartial({
+        archiveType: liftedinit.ghostcloud.v1.ArchiveType.Zip,
         content: buffer,
       }),
     })
   }
 
-  const { createDeployment } = ghostcloud.ghostcloud.MessageComposer.withTypeUrl
+  const { createDeployment } =
+    liftedinit.ghostcloud.v1.MessageComposer.withTypeUrl
   return createDeployment({
     meta: {
       creator,
@@ -153,15 +154,16 @@ async function updateDeploymentMsg(data: DeploymentData, creator: string) {
   let payload
   if (data.file) {
     const buffer = await fileToArrayBuffer(data.file)
-    payload = ghostcloud.ghostcloud.Payload.fromPartial({
-      archive: ghostcloud.ghostcloud.Archive.fromPartial({
-        type: ghostcloud.ghostcloud.ArchiveType.Zip,
+    payload = liftedinit.ghostcloud.v1.Payload.fromPartial({
+      archive: liftedinit.ghostcloud.v1.Archive.fromPartial({
+        archiveType: liftedinit.ghostcloud.v1.ArchiveType.Zip,
         content: buffer,
       }),
     })
   }
 
-  const { updateDeployment } = ghostcloud.ghostcloud.MessageComposer.withTypeUrl
+  const { updateDeployment } =
+    liftedinit.ghostcloud.v1.MessageComposer.withTypeUrl
   return updateDeployment({
     meta: {
       creator,
@@ -221,7 +223,8 @@ export const useUpdateDeployment = () => {
 }
 
 async function removeDeploymentMsg(name: string, creator: string) {
-  const { removeDeployment } = ghostcloud.ghostcloud.MessageComposer.withTypeUrl
+  const { removeDeployment } =
+    liftedinit.ghostcloud.v1.MessageComposer.withTypeUrl
   return removeDeployment({
     creator,
     name: name,
@@ -287,9 +290,9 @@ export const useFetchMetas = (): [
     }
 
     if (address) {
-      const filter = ghostcloud.ghostcloud.Filter.fromPartial({
-        field: ghostcloud.ghostcloud.Filter_Field.CREATOR,
-        operator: ghostcloud.ghostcloud.Filter_Operator.EQUAL,
+      const filter = liftedinit.ghostcloud.v1.Filter.fromPartial({
+        field: liftedinit.ghostcloud.v1.Filter_Field.CREATOR,
+        operator: liftedinit.ghostcloud.v1.Filter_Operator.EQUAL,
         value: address,
       })
       const pagination = cosmos.base.query.v1beta1.PageRequest.fromPartial({
@@ -297,11 +300,11 @@ export const useFetchMetas = (): [
         countTotal: true,
         offset: BigInt(pageLimit * page),
       })
-      const request = ghostcloud.ghostcloud.QueryMetasRequest.fromPartial({
+      const request = liftedinit.ghostcloud.v1.QueryMetasRequest.fromPartial({
         filters: [filter],
         pagination,
       })
-      const res = await lcdQueryClient.ghostcloud.ghostcloud.metas(request)
+      const res = await lcdQueryClient.liftedinit.ghostcloud.v1.metas(request)
 
       if (res.pagination?.total ?? 0 > 0) {
         setPageCount(Math.ceil(Number(res.pagination?.total) / pageLimit))
