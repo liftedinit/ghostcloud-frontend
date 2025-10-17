@@ -2241,8 +2241,9 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@liftedinit/gcjs@file:../gcjs":
+"@liftedinit/gcjs@github:fmorency/gcjs#cosmos-050":
   version "0.1.0"
+  resolved "https://codeload.github.com/fmorency/gcjs/tar.gz/43eaf617d3f2c5f9fc3af493cba2faece5b83f53"
   dependencies:
     "@cosmjs/amino" "0.34.0"
     "@cosmjs/proto-signing" "0.34.0"

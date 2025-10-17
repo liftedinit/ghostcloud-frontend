@@ -23,7 +23,7 @@
     "@emotion/react": "11.13.0",
     "@emotion/styled": "11.13.0",
     "@interchain-ui/react": "^1.23.29",
-    "@liftedinit/gcjs": "file:../gcjs",
+    "@liftedinit/gcjs": "github:fmorency/gcjs#cosmos-050",
     "@web3auth/base": "^9.7.0",
     "@web3auth/modal": "^9.7.0",
     "@web3auth/no-modal": "^9.7.0",
@@ -55,6 +55,7 @@
     "typescript": "5.5.4"
   },
   "resolutions": {
+    "@liftedinit/gcjs": "github:fmorency/gcjs#cosmos-050",
     "@types/react": "19.1.0",
     "@types/react-dom": "19.1.2",
     "form-data": "4.0.4"
