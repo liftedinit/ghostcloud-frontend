@@ -6,7 +6,7 @@ node_version: &node_version '20.9.0'
 cache_version: &cache_version 'v2'
 
 orbs:
-  node: circleci/node@5.2.0
+  node: circleci/node@7.2.0
   codecov: codecov/codecov@4.1.0
 
 jobs:
@@ -20,16 +20,16 @@ jobs:
     resource_class: large
     steps:
       - checkout
-      - node/install-yarn
+      - node/install-bun
       - run:
-          command: node -v && yarn -v
+          command: node -v && bun -v
       - node/install-packages:
-          pkg-manager: yarn
+          pkg-manager: bun
           cache-version: *cache_version
       - run:
-          command: yarn build
+          command: bun run build
       - run:
-          command: yarn coverage
+          command: bun run coverage
       - codecov/upload
   security:
     parameters:
@@ -41,13 +41,13 @@ jobs:
     resource_class: medium
     steps:
       - checkout
-      - node/install-yarn
+      - node/install-bun
       - run:
-          command: node -v && yarn -v
+          command: node -v && bun -v
       - node/install-packages:
-          pkg-manager: yarn
+          pkg-manager: bun
       - run:
-          command: yarn audit
+          command: bun audit
 
 workflows:
   ci:
