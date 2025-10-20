@@ -2,10 +2,7 @@
 
 import { useColorMode, useToast } from "@chakra-ui/react"
 import { web3AuthInitProvider } from "../lib/web3-auth"
-import {
-  GHOSTCLOUD_CHAIN_CONFIG,
-  GHOSTCLOUD_UI_CONFIG,
-} from "../config/ghostcloud-chain"
+import { GHOSTCLOUD_UI_CONFIG } from "../config/ghostcloud-chain"
 import useWeb3AuthStore from "../store/web3-auth"
 import { useRouter } from "next/router"
 
@@ -27,7 +24,7 @@ export default function useAuthHandlers() {
         mode: colorMode,
       }
       try {
-        await web3AuthInitProvider(GHOSTCLOUD_CHAIN_CONFIG, uiConfig)
+        await web3AuthInitProvider(uiConfig)
       } catch (error) {
         toast({
           title: "An error occurred while trying to login",
