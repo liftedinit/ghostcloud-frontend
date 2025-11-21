@@ -9,9 +9,9 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react"
 import Link from "next/link"
-import logoDark from "../public/logo-white.png"
-import logoLight from "../public/logo-black.png"
-import manifest from "../public/manifest-powered.webp"
+import logoDark from "@/public/logo-white.png"
+import logoLight from "@/public/logo-black.png"
+import manifest from "@/public/manifest-powered.webp"
 
 export default function Footer() {
   const bgColor = useColorModeValue(

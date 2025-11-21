@@ -12,13 +12,13 @@ import {
 } from "@chakra-ui/react"
 import Image from "next/image"
 import { GoLock, GoShieldCheck, GoSmiley } from "react-icons/go"
-import logoDark from "../public/logo192-white.png"
-import logoLight from "../public/logo192-black.png"
-import heroDark from "../public/hero-dark.png"
-import heroLight from "../public/hero-light.png"
+import logoDark from "@/public/logo192-white.png"
+import logoLight from "@/public/logo192-black.png"
+import heroDark from "@/public/hero-dark.png"
+import heroLight from "@/public/hero-light.png"
 import React from "react"
-import { Feature } from "../components"
-import useAuthHandlers from "../hooks/useAuthHandlers"
+import { Feature } from "@/components/features"
+import useAuthHandlers from "@/hooks/useAuthHandlers"
 
 export default function Home() {
   const bgColor = useColorModeValue(

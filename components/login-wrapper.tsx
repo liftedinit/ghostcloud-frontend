@@ -1,6 +1,6 @@
 import React from "react"
-import useAuthHandlers from "../hooks/useAuthHandlers"
-import useOpenLoginSession from "../hooks/useOpenLoginSession"
+import useAuthHandlers from "@/hooks/useAuthHandlers"
+import useOpenLoginSession from "@/hooks/useOpenLoginSession"
 
 const LoginWrapper = ({ children }: { children: React.ReactNode }) => {
   const { handleLogin } = useAuthHandlers()

@@ -1,17 +1,22 @@
-import "@testing-library/jest-dom"
-import { render, screen } from "@testing-library/react"
-import Home from "../../pages"
+/// <reference lib="dom" />
 
-jest.mock("../../hooks/useAuthHandlers", () => {
-  return jest.fn().mockReturnValue({
-    handleLogin: jest.fn(),
-    handleLogout: jest.fn(),
-  })
-})
+import { describe, it, expect, afterEach } from "bun:test"
+import { render, screen, cleanup } from "@testing-library/react"
+import { setupAuthHandlersMock, setupNextImageMock } from "../setup/mocks"
+import "@testing-library/jest-dom"
+
+setupNextImageMock()
+setupAuthHandlersMock()
 
 describe("Home", () => {
-  it("renders the home page", () => {
+  afterEach(() => {
+    cleanup()
+  })
+
+  it("renders the home page", async () => {
+    const { default: Home } = await import("@/pages/index")
     render(<Home />)
+
     expect(
       screen.getByText("Decentralized Web Hosting for Humans"),
     ).toBeInTheDocument()

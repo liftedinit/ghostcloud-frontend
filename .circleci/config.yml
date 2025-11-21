@@ -2,8 +2,8 @@
 # The Lifted Initiative
 version: 2.1
 
-node_version: &node_version '20.9.0'
-cache_version: &cache_version 'v2'
+node_version: &node_version "20.9.0"
+cache_version: &cache_version "v2"
 
 orbs:
   node: circleci/node@7.2.0
@@ -29,7 +29,7 @@ jobs:
       - run:
           command: bun run build
       - run:
-          command: bun run coverage
+          command: bun test --coverage
       - codecov/upload
   security:
     parameters:

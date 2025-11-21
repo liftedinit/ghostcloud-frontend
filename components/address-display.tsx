@@ -7,8 +7,8 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react"
 import { LuCopy, LuCopyCheck } from "react-icons/lu"
-import { truncateAddress } from "../helpers/address"
-import { useFetchAddress } from "../lib/ghostcloud"
+import { truncateAddress } from "@/helpers/address"
+import { useFetchAddress } from "@/lib/ghostcloud"
 
 export default function AddressDisplay() {
   const addrBgColor = useColorModeValue(

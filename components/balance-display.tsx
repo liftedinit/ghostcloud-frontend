@@ -1,4 +1,4 @@
-import { useFetchBalance } from "../lib/ghostcloud"
+import { useFetchBalance } from "@/lib/ghostcloud"
 import { Box, Flex, Spinner, useColorModeValue } from "@chakra-ui/react"
 
 export default function BalanceDisplay() {

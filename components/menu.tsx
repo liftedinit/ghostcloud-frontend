@@ -6,10 +6,10 @@ import {
   MenuItem,
   MenuList,
 } from "@chakra-ui/react"
-import useWeb3AuthStore from "../store/web3-auth"
+import useWeb3AuthStore from "@/store/web3-auth"
 import { TfiMenu } from "react-icons/tfi"
 import Link from "next/link"
-import useAuthHandlers from "../hooks/useAuthHandlers"
+import useAuthHandlers from "@/hooks/useAuthHandlers"
 import React from "react"
 
 type LoginProps = {}

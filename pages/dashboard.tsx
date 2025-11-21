@@ -1,6 +1,6 @@
 import React from "react"
-import useWeb3AuthStore from "../store/web3-auth"
-import DashboardComponent from "../components/dashboard"
+import useWeb3AuthStore from "@/store/web3-auth"
+import DashboardComponent from "@/components/dashboard"
 import {
   Alert,
   AlertIcon,
@@ -10,7 +10,7 @@ import {
   Grid,
   GridItem,
 } from "@chakra-ui/react"
-import useOpenLoginSession from "../hooks/useOpenLoginSession"
+import useOpenLoginSession from "@/hooks/useOpenLoginSession"
 
 export default function Dashboard() {
   const store = useWeb3AuthStore()

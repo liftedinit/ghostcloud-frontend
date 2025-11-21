@@ -1,8 +1,8 @@
 import { create } from "zustand"
 import { IProvider, Web3Auth } from "@web3auth/modal"
-import { GHOSTCLOUD_ADDRESS_PREFIX } from "../config/ghostcloud-chain"
+import { GHOSTCLOUD_ADDRESS_PREFIX } from "@/config/ghostcloud-chain"
 import { DirectSecp256k1Wallet } from "@cosmjs/proto-signing"
-import { hexToBytes } from "@metamask/utils"
+import { fromHex } from "@cosmjs/encoding"
 
 interface Web3AuthState {
   provider: IProvider | null
@@ -42,7 +42,7 @@ const useWeb3AuthStore = create<Web3AuthState>((set, get) => ({
       if (buffer === null) {
         return null
       }
-      const privateKey = hexToBytes(buffer)
+      const privateKey = fromHex(buffer)
       const walletPromise = await DirectSecp256k1Wallet.fromKey(
         privateKey,
         GHOSTCLOUD_ADDRESS_PREFIX,

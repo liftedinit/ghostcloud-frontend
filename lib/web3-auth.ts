@@ -1,6 +1,6 @@
 import { UIConfig, Web3Auth } from "@web3auth/modal"
-import { WEB3AUTH_CLIENT_ID, WEB3AUTH_NETWORK } from "../config/web3-auth"
-import useWeb3AuthStore from "../store/web3-auth"
+import { WEB3AUTH_CLIENT_ID, WEB3AUTH_NETWORK } from "@/config/web3-auth"
+import useWeb3AuthStore from "@/store/web3-auth"
 
 // Initialize the Web3Auth provider using the provided chain and UI configs.
 // This function initializes the Web3Auth login modal and connects to the provider.
