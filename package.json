@@ -6,8 +6,6 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "test": "jest --watch",
-    "coverage": "jest --coverage",
     "lint": "next lint",
     "prettier": "prettier --write ."
   },
