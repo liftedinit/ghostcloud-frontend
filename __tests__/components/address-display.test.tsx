@@ -1,20 +1,33 @@
-// @ts-nocheck
-import "@testing-library/jest-dom"
-import { render, screen } from "@testing-library/react"
-import { useQuery } from "@tanstack/react-query"
-import AddressDisplay from "../../components/address-display"
+/// <reference lib="dom" />
 
-jest.mock("@tanstack/react-query", () => ({
-  useQuery: jest.fn(),
-}))
+import { describe, it, expect, afterEach } from "bun:test"
+import { render, screen, cleanup } from "@testing-library/react"
+import {
+  setupThemeMock,
+  setupGhostcloudMock,
+  setMockFetchAddress,
+} from "../setup/mocks"
+import "@testing-library/jest-dom"
+
+setupThemeMock()
+setupGhostcloudMock()
+
 describe("AddressDisplay", () => {
-  it("renders correct elements", () => {
-    useQuery.mockReturnValue({
+  afterEach(() => {
+    cleanup()
+  })
+
+  it("renders correct elements", async () => {
+    setMockFetchAddress({
       isLoading: false,
       data: "1234567890",
     })
+
+    const { default: AddressDisplay } = await import(
+      "@/components/address-display"
+    )
     render(<AddressDisplay />)
     expect(screen.getByText("Logged as")).toBeInTheDocument()
-    expect(screen.queryByTestId("address")?.textContent).toContain("123")
+    expect(screen.getByTestId("address").textContent).toContain("123")
   })
 })

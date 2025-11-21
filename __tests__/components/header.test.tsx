@@ -1,17 +1,26 @@
-import "@testing-library/jest-dom"
-import { render, screen } from "@testing-library/react"
-import Header from "../../components/header"
+/// <reference lib="dom" />
 
-jest.mock("../../hooks/useAuthHandlers", () => {
-  return jest.fn().mockReturnValue({
-    handleLogin: jest.fn(),
-    handleLogout: jest.fn(),
-  })
-})
+import { describe, it, expect, afterEach } from "bun:test"
+import { render, screen, cleanup } from "@testing-library/react"
+import {
+  setupNextImageMock,
+  setupAuthHandlersMock,
+  setupWeb3AuthStoreMock,
+} from "../setup/mocks"
+
+setupNextImageMock()
+setupAuthHandlersMock()
+setupWeb3AuthStoreMock()
 
 describe("Header", () => {
-  it("renders correct components", () => {
+  afterEach(() => {
+    cleanup()
+  })
+
+  it("renders correct components", async () => {
+    const { default: Header } = await import("@/components/header")
     render(<Header />)
+
     expect(screen.getByAltText("Header Logo")).toBeInTheDocument()
     expect(screen.getByTestId("menu")).toBeInTheDocument()
     expect(screen.getByTestId("theme-toggle")).toBeInTheDocument()

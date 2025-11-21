@@ -13,7 +13,7 @@ import {
   GHOSTCLOUD_GAS_LIMIT_MULTIPLIER,
   GHOSTCLOUD_GAS_PRICE,
   GHOSTCLOUD_RPC_TARGET,
-} from "../config/ghostcloud-chain"
+} from "@/config/ghostcloud-chain"
 import useWeb3AuthStore from "../store/web3-auth"
 import {
   DirectSecp256k1Wallet,
@@ -21,8 +21,8 @@ import {
   GeneratedType,
   Registry,
 } from "@cosmjs/proto-signing"
-import { DeploymentData } from "../components/create-deployment"
-import { fileToArrayBuffer } from "../helpers/files"
+import { DeploymentData } from "@/components/create-deployment"
+import { fileToArrayBuffer } from "@/helpers/files"
 import {
   keepPreviousData,
   useMutation,
@@ -37,7 +37,7 @@ import {
   SigningStargateClient,
 } from "@cosmjs/stargate"
 import { fromHex } from "@cosmjs/encoding"
-import { useLcdQueryClient } from "../hooks/useLcdQueryClient"
+import { useLcdQueryClient } from "@/hooks/useLcdQueryClient"
 import { QueryMetasResponseSDKType } from "@liftedinit/gcjs/dist/codegen/liftedinit/ghostcloud/v1/query"
 
 async function createSigner(pk: Uint8Array) {
@@ -284,11 +284,11 @@ export const useFetchMetas = (): [
   const { lcdQueryClient } = useLcdQueryClient()
 
   const list = async () => {
-    const address = await store.getAddress()
     if (!lcdQueryClient) {
       throw new Error("LCD Client not ready")
     }
 
+    const address = await store.getAddress()
     if (address) {
       const filter = liftedinit.ghostcloud.v1.Filter.fromPartial({
         field: liftedinit.ghostcloud.v1.Filter_Field.CREATOR,

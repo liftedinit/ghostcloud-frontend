@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import useWeb3AuthStore from "../store/web3-auth"
+import useWeb3AuthStore from "@/store/web3-auth"
 
 function useOpenLoginSession() {
   const store = useWeb3AuthStore()

@@ -1,60 +1,56 @@
-// @ts-nocheck
-import { render, screen, fireEvent } from "@testing-library/react"
-import Menu from "../../components/menu"
-import useWeb3AuthStore from "../../store/web3-auth"
-import useAuthHandlers from "../../hooks/useAuthHandlers"
+/// <reference lib="dom" />
 
-jest.mock("../../store/web3-auth", () => jest.fn())
-jest.mock("../../hooks/useAuthHandlers", () =>
-  jest.fn().mockReturnValue({
-    handleLogin: jest.fn(),
-    handleLogout: jest.fn(),
-  }),
-)
+import { describe, it, expect, beforeEach, afterEach } from "bun:test"
+import { render, screen, fireEvent, cleanup } from "@testing-library/react"
+import {
+  mockHandleLogin,
+  mockHandleLogout,
+  setupAuthHandlersMock,
+  setupWeb3AuthStoreMock,
+  setMockProvider,
+} from "../setup/mocks"
+
+setupAuthHandlersMock()
+setupWeb3AuthStoreMock()
 
 describe("Menu", () => {
-  it("renders Login button when provider is not available", () => {
-    useWeb3AuthStore.mockReturnValue({
-      provider: null,
-    })
+  beforeEach(() => {
+    mockHandleLogin.mockClear()
+    mockHandleLogout.mockClear()
+    setMockProvider(null)
+  })
+
+  afterEach(() => {
+    cleanup()
+  })
+
+  it("renders Login button when provider is not available", async () => {
+    const { default: Menu } = await import("@/components/menu")
     render(<Menu />)
+
     expect(screen.getByText("Login")).toBeInTheDocument()
   })
 
-  it("renders Dashboard and Logout buttons when provider is available", () => {
-    useWeb3AuthStore.mockReturnValue({
-      provider: {},
-    })
+  it("renders Dashboard and Logout buttons when provider is available", async () => {
+    setMockProvider({})
+    const { default: Menu } = await import("@/components/menu")
     render(<Menu />)
     expect(screen.getByText("Dashboard")).toBeInTheDocument()
     expect(screen.getByText("Logout")).toBeInTheDocument()
   })
 
-  it("calls handleLogin when Login button is clicked", () => {
-    useWeb3AuthStore.mockReturnValue({
-      provider: null,
-    })
-    const handleLogin = jest.fn()
-    useAuthHandlers.mockReturnValue({
-      handleLogin,
-      handleLogout: jest.fn(),
-    })
+  it("calls handleLogin when Login button is clicked", async () => {
+    const { default: Menu } = await import("@/components/menu")
     render(<Menu />)
     fireEvent.click(screen.getByText("Login"))
-    expect(handleLogin).toHaveBeenCalled()
+    expect(mockHandleLogin).toHaveBeenCalled()
   })
 
-  it("calls handleLogout when Logout button is clicked", () => {
-    useWeb3AuthStore.mockReturnValue({
-      provider: "mockProvider",
-    })
-    const handleLogout = jest.fn()
-    useAuthHandlers.mockReturnValue({
-      handleLogin: jest.fn(),
-      handleLogout,
-    })
+  it("calls handleLogout when Logout button is clicked", async () => {
+    setMockProvider("mockProvider")
+    const { default: Menu } = await import("@/components/menu")
     render(<Menu />)
     fireEvent.click(screen.getByText("Logout"))
-    expect(handleLogout).toHaveBeenCalled()
+    expect(mockHandleLogout).toHaveBeenCalled()
   })
 })

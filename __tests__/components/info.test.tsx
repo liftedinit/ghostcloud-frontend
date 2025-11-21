@@ -1,26 +1,29 @@
-// @ts-nocheck
-import React from "react"
-import { render, screen, fireEvent, waitFor } from "@testing-library/react"
-import Info, { tips } from "../../components/info"
+/// <reference lib="dom" />
 
-jest.mock("@chakra-ui/react", () => ({
-  ...jest.requireActual("@chakra-ui/react"),
-  useTheme: () => ({
-    colors: {
-      white: "#FFFFFF",
-      gray: {
-        500: "#A0AEC0",
-      },
-    },
-  }),
-}))
+import { describe, it, expect, afterEach } from "bun:test"
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  cleanup,
+} from "@testing-library/react"
+import Info, { tips } from "@/components/info"
+import { setupThemeMock } from "../setup/mocks"
+
+setupThemeMock()
 
 describe("Info", () => {
-  Object.keys(tips).forEach(key => {
-    it("renders", async () => {
+  afterEach(() => {
+    cleanup()
+  })
+
+  for (const key of Object.keys(tips)) {
+    it(`renders tooltip for ${key}`, async () => {
       render(<Info id={key as keyof typeof tips} />)
       const element = screen.getByTestId(`info-${key}`)
       expect(element).toBeInTheDocument()
+
       fireEvent.focus(element)
       await waitFor(() => {
         expect(
@@ -28,5 +31,5 @@ describe("Info", () => {
         ).toBeInTheDocument()
       })
     })
-  })
+  }
 })

@@ -12,22 +12,27 @@ import {
   QueryCache,
 } from "@tanstack/react-query"
 import { useDisplayError } from "../helpers/errors"
+import { useMemo } from "react"
 
 function CreateCosmosApp({ Component, pageProps }: AppProps) {
   const displayError = useDisplayError()
 
-  const queryClient = new QueryClient({
-    queryCache: new QueryCache({
-      onError: (error, query) => {
-        if (query.meta && typeof query.meta.errorMessage === "string") {
-          displayError(query.meta.errorMessage, error)
-        } else {
-          // Provide a default message
-          displayError("Query Error", error)
-        }
-      },
-    }),
-  })
+  const queryClient = useMemo(
+    () =>
+      new QueryClient({
+        queryCache: new QueryCache({
+          onError: (error, query) => {
+            if (query.meta && typeof query.meta.errorMessage === "string") {
+              displayError(query.meta.errorMessage, error)
+            } else {
+              // Provide a default message
+              displayError("Query Error", error)
+            }
+          },
+        }),
+      }),
+    [displayError],
+  )
 
   return (
     <LoginWrapper>

@@ -1,6 +1,6 @@
 import { liftedinit } from "@liftedinit/gcjs"
 import { useQuery } from "@tanstack/react-query"
-import { GHOSTCLOUD_REST_TARGET } from "../config/ghostcloud-chain"
+import { GHOSTCLOUD_REST_TARGET } from "@/config/ghostcloud-chain"
 
 const createLcdQueryClient = liftedinit.ClientFactory.createLCDClient
 

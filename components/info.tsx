@@ -1,8 +1,6 @@
 import { Box, Icon, Tooltip, useTheme } from "@chakra-ui/react"
 import { FaInfoCircle } from "react-icons/fa"
-import {
-  GHOSTCLOUD_INFRA_LOADBALANCER_IP
-} from "../config/ghostcloud-infra"
+import { GHOSTCLOUD_INFRA_LOADBALANCER_IP } from "@/config/ghostcloud-infra"
 
 export const tips = {
   name: "The randomly generated identifier for your deployment.",

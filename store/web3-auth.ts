@@ -1,6 +1,6 @@
 import { create } from "zustand"
 import { IProvider, Web3Auth } from "@web3auth/modal"
-import { GHOSTCLOUD_ADDRESS_PREFIX } from "../config/ghostcloud-chain"
+import { GHOSTCLOUD_ADDRESS_PREFIX } from "@/config/ghostcloud-chain"
 import { DirectSecp256k1Wallet } from "@cosmjs/proto-signing"
 import { fromHex } from "@cosmjs/encoding"
 

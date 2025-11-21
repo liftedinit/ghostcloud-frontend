@@ -11,12 +11,12 @@ import {
   VStack,
 } from "@chakra-ui/react"
 import Link from "next/link"
-import logoLight from "../public/logo-black.png"
-import logoDark from "../public/logo-white.png"
+import logoLight from "@/public/logo-black.png"
+import logoDark from "@/public/logo-white.png"
 import { BsFillMoonStarsFill, BsFillSunFill } from "react-icons/bs"
 import Menu from "./menu"
 import AddressDisplay from "./address-display"
-import useWeb3AuthStore from "../store/web3-auth"
+import useWeb3AuthStore from "@/store/web3-auth"
 import BalanceDisplay from "./balance-display"
 
 function Header() {
