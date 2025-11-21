@@ -5,7 +5,7 @@ on:
     branches:
       - main
     tags:
-      - '*'
+      - "*"
 
 jobs:
   build-and-push:
@@ -48,7 +48,8 @@ jobs:
         run: echo "GIT_TAG=$(echo ${GITHUB_REF#refs/tags/})" >> $GITHUB_ENV
 
       - name: Build and push with github release tag
-        if: matrix.environment == 'alpha' && startsWith(github.ref, 'refs/tags/')
+        if:
+          matrix.environment == 'alpha' && startsWith(github.ref, 'refs/tags/')
         uses: docker/build-push-action@v6
         with:
           context: .
