@@ -7,11 +7,11 @@ FROM base AS deps
 WORKDIR /app
 
 # Install dependencies based on the preferred package manager
-COPY package.json package-lock.json* pnpm-lock.yaml* .npmrc* bun.lockb ./
+COPY package.json package-lock.json* pnpm-lock.yaml* .npmrc* bun.lock* ./
 RUN \
   if [ -f package-lock.json ]; then npm ci; \
   elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --frozen-lockfile; \
-  elif [ -f bun.lockb ]; then bun install --no-save; \
+  elif [ -f bun.lockb ] || [ -f bun.lock ]; then bun install --no-save; \
   else echo "Lockfile not found." && exit 1; \
   fi
 
@@ -32,7 +32,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN \
   if [ -f package-lock.json ]; then npm run build; \
   elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build; \
-  elif [ -f bun.lockb ]; then bun run build; \
+  elif [ -f bun.lockb ] || [ -f bun.lock ]; then bun run build; \
   else echo "Lockfile not found." && exit 1; \
   fi
 
